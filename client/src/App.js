@@ -1,46 +1,48 @@
 import "./App.css";
-import io from "socket.io-client";
-import { useState } from "react";
-import Chat from "./Chat";
-
-const socket = io.connect("http://localhost:3001");
+import { Button } from "antd";
+import { MainButton } from "./component/buttons/mainbutton";
+import { Route, Routes, useNavigate } from "react-router-dom";
+import Allroutes from "./component/route/routes";
 
 function App() {
-  const [username, setUsername] = useState("");
-  const [room, setRoom] = useState("");
-  const [showChat, setShowChat] = useState(false);
-
-  const joinRoom = () => {
-    if (username !== "" && room !== "") {
-      socket.emit("join_room", room);
-      setShowChat(true);
-    }
+  const navigate = useNavigate();
+  const handleClick = () => {
+    navigate("/login");
   };
-
   return (
-    <div className="App">
-      {!showChat ? (
-        <div className="joinChatContainer">
-          <h3>Join A Chat</h3>
-          <input
-            type="text"
-            placeholder="user name..."
-            onChange={(event) => {
-              setUsername(event.target.value);
-            }}
-          />
-          <input
-            type="text"
-            placeholder="Room ID..."
-            onChange={(event) => {
-              setRoom(event.target.value);
-            }}
-          />
-          <button onClick={joinRoom}>Join A Room</button>
-        </div>
-      ) : (
-        <Chat socket={socket} username={username} room={room} />
-      )}
+    <div className="mobile-view h-scree flex flex-col justify-between">
+      {/* Middle Section - Image and Text */}
+      <Routes>
+        <Route
+          path="/"
+          element={
+            <>
+              <div className="flex flex-col items-center justify-center flex-grow mt-20">
+                <div className="image-container">
+                  <img
+                    src="/images/image1.png"
+                    alt="App Banner"
+                    className="w-60 h-70"
+                  />
+                </div>
+              </div>
+              <div className="flex flex-col items-center justify-center flex-grow mt-20">
+                <h4 className="text-black font-bold text-[20px] leading-none">
+                  Goftego
+                </h4>
+                <h6 className="text-black mt-2 text-center leading-none">
+                  Welcome to Your Friendly <br /> Chat Companion!
+                </h6>
+              </div>
+
+              <div className="mt-14 mb-3 flex justify-center">
+                <MainButton text={"Get Started"} onClick={handleClick} />
+              </div>
+            </>
+          }
+        />
+        <Route path="/*" element={<Allroutes />} />
+      </Routes>
     </div>
   );
 }

@@ -1,0 +1,25 @@
+/* Login.css */
+
+/* Additional styles for the form */
+.form-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-top: 50px !important;
+  height: 100%;
+}
+
+.input-field {
+  width: 300px !important; /* Fixed width for the input fields */
+  height: 50px !important; /* Set height for the input fields */
+  border-radius: 30px !important; /* Rounded corners */
+  padding: 0 20px; /* Horizontal padding */
+  border: 1px solid #36b8b8 !important; /* Border color */
+  margin-bottom: 15px;
+}
+
+.submit-button {
+  display: flex;
+  justify-content: center; /* Center the button */
+  margin-top: 20px !important; /* Space above the button */
+}

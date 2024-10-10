@@ -1,13 +1,45 @@
-body {
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Apply mobile layout to the entire app */
+html,
+body,
+#root {
+  height: 100%;
   margin: 0;
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
-    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
-    sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
+  padding: 0;
+  overflow: hidden; /* Prevent overflow on the body */
 }
 
-code {
-  font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
-    monospace;
+/* Main container that mimics mobile device dimensions */
+.mobile-view {
+  width: 375px; /* Mobile width */
+  height: 100vh; /* Full viewport height */
+  margin: 0 auto;
+  border: 1px solid #ddd;
+  background-color: #e9fefe;
+  border-radius: 25px;
+  overflow-y: auto; /* Enable vertical scrolling */
 }
+
+/* Prevent scaling of content */
+body {
+  -webkit-transform: scale(1);
+  transform: scale(1);
+}
+
+/* Force mobile size on larger screens */
+@media (min-width: 768px) {
+  html,
+  body,
+  .mobile-view {
+    width: 375px; /* Keep the width locked for larger screens */
+    height: 100vh; /* Keep the height locked */
+    overflow: hidden; /* Prevent overflow on larger screens */
+    margin: 0 auto;
+    display: block;
+  }
+}
+/* Custom Scrollbar Styles */
+/* Custom Scrollbar Styles */

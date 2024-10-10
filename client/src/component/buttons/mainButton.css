@@ -1,0 +1,19 @@
+.primary-button {
+  background-color: #36b8b8 !important;
+  color: white !important;
+  border: none;
+  width: 300px !important;
+  height: 50px !important;
+  font-size: 16px !important;
+  border-radius: 30px !important;
+}
+
+.primary-button:disabled {
+  background-color: #b2e0e0; /* Disabled state color */
+  color: #d1d1d1;
+}
+
+.large-btn {
+  width: 300px !important;
+  height: 50px; /* Fixed height */
+}
