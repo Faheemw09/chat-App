@@ -6,7 +6,7 @@ import ScrollToBottom from "react-scroll-to-bottom";
 import io from "socket.io-client";
 import axios from "axios";
 
-const SOCKET_SERVER_URL = "http://localhost:8080"; // Replace with your backend URL
+const SOCKET_SERVER_URL = "https://chatap-iqxt.onrender.com"; // Replace with your backend URL
 
 const SingleChat = () => {
   const { receiverId } = useParams();
@@ -23,7 +23,7 @@ const SingleChat = () => {
     const fetchUserData = async () => {
       try {
         const response = await axios.get(
-          `http://localhost:8080/api/user/user/${receiverId}`
+          `https://chatap-iqxt.onrender.com/api/user/user/${receiverId}`
         );
         setUserData(response.data.data);
       } catch (error) {
@@ -110,7 +110,10 @@ const SingleChat = () => {
       setInput(""); // Clear input field
       // Send the message to the server via API call
       axios
-        .post("http://localhost:8080/api/chat/send-message", newMessage)
+        .post(
+          "https://chatap-iqxt.onrender.com/api/chat/send-message",
+          newMessage
+        )
         .catch((error) => console.error("Error sending message:", error));
     }
   };

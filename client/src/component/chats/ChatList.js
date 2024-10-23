@@ -22,7 +22,7 @@ const ChatList = () => {
     const fetchUserData = async () => {
       try {
         const response = await axios.get(
-          `http://localhost:8080/api/user/user/${userId}`
+          `https://chatap-iqxt.onrender.com/api/user/user/${userId}`
         );
         setCurrentUser(response.data.data);
       } catch (error) {
@@ -38,7 +38,7 @@ const ChatList = () => {
     const fetchUsers = async () => {
       try {
         const response = await axios.get(
-          `http://localhost:8080/api/chat/get-chats/${userId}`
+          `https://chatap-iqxt.onrender.com/api/chat/get-chats/${userId}`
         );
 
         setUsers(response.data.data);
@@ -58,7 +58,7 @@ const ChatList = () => {
     if (!hasMore) return;
     try {
       const response = await axios.get(
-        `http://localhost:8080/api/chat/get-chats/${userId}`
+        `https://chatap-iqxt.onrender.com/api/chat/get-chats/${userId}`
       );
       const newUsers = response.data.data;
       setUsers((prevUsers) => [...prevUsers, ...newUsers]);

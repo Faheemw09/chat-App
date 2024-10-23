@@ -15,7 +15,7 @@ import {
 export const SignIn = (obj, navigate) => (dispatch) => {
   dispatch({ type: LOGIN_REQUEST });
   return axios
-    .post(`http://localhost:8080/api/user/user-signin`, obj)
+    .post(`https://chatap-iqxt.onrender.com/api/user/user-signin`, obj)
     .then((res) => {
       const { token, user } = res.data;
       console.log({ token, user });
@@ -38,7 +38,7 @@ export const SignUp = (obj, navigate) => async (dispatch) => {
 
   try {
     const response = await axios.post(
-      `http://localhost:8080/api/user/user-signup`,
+      `https://chatap-iqxt.onrender.com/api/user/user-signup`,
       obj
     ); // Use your own API endpoint
     const { user } = response.data;
