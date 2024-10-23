@@ -15,7 +15,7 @@ export const getUser = (paramobj, token) => (dispatch) => {
   };
 
   axios
-    .get(`http://localhost:8080/api/user/all-users`, config)
+    .get(`https://chat-app-xsx0.onrender.com/api/user/all-users`, config)
     .then((res) => {
       console.log(res, "res");
       dispatch({ type: USER_REQUEST_SUCCESS, payload: res.data.data });
