@@ -20,7 +20,7 @@ const SingleMessageCard = ({ name, imageUrl, lastMessage, time }) => {
   };
 
   return (
-    <div className="w-full p-4 flex flex-row items-center bg-white rounded-lg shadow-lg border border-gray-300">
+    <div className="w-full p-4 flex flex-row items-center bg-white rounded-lg shadow-lg border border-border">
       {/* Profile Image */}
       <div className="mr-4">{renderProfileImage()}</div>
 

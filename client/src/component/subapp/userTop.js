@@ -1,17 +1,18 @@
 import { Avatar } from "antd";
 import { UserOutlined, MessageOutlined } from "@ant-design/icons"; // Ant D
 const UserTop = ({ gender, name, imageUrl }) => {
+  console.log(imageUrl, "image");
+
   const renderProfileImage = () => {
     if (imageUrl) {
       return (
         <img
-          src={imageUrl} // Image URL from props
+          src={imageUrl}
           alt="Profile"
-          className="w-5 h-5 rounded-full border-4 border-gray-200" // Width and height set to 100px
+          className="w-6 h-6 mt-2 rounded-full border-4 border-gray-200" // Width and height set to 100px
         />
       );
     } else {
-      // Return gender-specific icons
       return (
         <Avatar
           size={30}
@@ -24,7 +25,7 @@ const UserTop = ({ gender, name, imageUrl }) => {
   return (
     <div className="flex flex-row justify-start items-start ">
       <div className="flex justify-center ">{renderProfileImage()}</div>
-      <h2 className="text-xl font-semibold ml-2 text-white">
+      <h2 className="text-xl mt-1 font-semibold ml-2 text-white">
         {name || "Unknown User"}
       </h2>
     </div>

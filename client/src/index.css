@@ -14,7 +14,7 @@ body,
 
 /* Main container that mimics mobile device dimensions */
 .mobile-view {
-  width: 375px; /* Mobile width */
+  width: 100vw; /* Mobile width */
   height: 100vh; /* Full viewport height */
   margin: 0 auto;
   border: 1px solid #ddd;

@@ -3,7 +3,7 @@ import { UserOutlined, MessageOutlined } from "@ant-design/icons"; // Ant Design
 import { Avatar } from "antd"; // Ant Design Avatar for icons
 import { useNavigate } from "react-router-dom";
 
-const UserCard = ({ name, bio, gender, imageUrl }) => {
+const UserCard = ({ name, bio, gender, id, imageUrl }) => {
   const navigate = useNavigate();
 
   // Conditional rendering for the profile image or gender icon
@@ -56,12 +56,13 @@ const UserCard = ({ name, bio, gender, imageUrl }) => {
           <UserOutlined
             className="text-primary text-lg"
             style={{ fontSize: "1.5rem" }}
+            onClick={() => navigate(`/userprofile/${id}`)}
           />{" "}
           {/* Increased icon size */}
           <MessageOutlined
             className="text-primary text-lg"
             style={{ fontSize: "1.5rem" }}
-            onClick={() => navigate("/chat")}
+            onClick={() => navigate(`/chat/${id}`)}
           />{" "}
           {/* Increased icon size */}
         </div>

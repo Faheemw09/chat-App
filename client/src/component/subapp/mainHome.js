@@ -1,94 +1,63 @@
 import UserCard from "./userCard";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import InfiniteScroll from "react-infinite-scroll-component";
 import UserTop from "./userTop";
 import Topnav from "../nav/topnav";
 import BottomNav from "../nav/topnav";
+import { useDispatch, useSelector } from "react-redux"; // Import Redux hooks
+import { getUser } from "../redux/Userreducer/action"; // Adjust the import path
 
 const MainHome = () => {
-  // Initial user data
-  const initialUsers = [
-    {
-      name: "John Doe",
-      bio: "This is a short bio for John.",
-      gender: "male",
-      imageUrl: "", // Leave empty for default icon
-    },
-    {
-      name: "Jane Smith",
-      bio: "This is a short bio for Jane.",
-      gender: "female",
-      imageUrl: "", // Leave empty for default icon
-    },
-    {
-      name: "Alice Johnson",
-      bio: "Short bio for Alice.",
-      gender: "female",
-      imageUrl: "", // Leave empty for default icon
-    },
-    {
-      name: "Bob Brown",
-      bio: "This is a bio for Bob.",
-      gender: "male",
-      imageUrl: "", // Leave empty for default icon
-    },
-    {
-      name: "Charlie Davis",
-      bio: "Bio for Charlie.",
-      gender: "male",
-      imageUrl: "", // Leave empty for default icon
-    },
-  ];
+  const dispatch = useDispatch();
+  const {
+    users,
+    isLoading: reduxLoading,
+    isError,
+  } = useSelector((state) => state.user);
+  const storedUser = JSON.parse(localStorage.getItem("user")) || {};
+  console.log(storedUser.profilePic, "dd");
 
-  // State for users and loading
-  const [users, setUsers] = useState(initialUsers);
-  const [hasMore, setHasMore] = useState(true);
+  const [hasMore, setHasMore] = useState(true); // Manage infinite scroll state
+  const [isLoading, setIsLoading] = useState(false); // Define local loading state
 
-  // Function to fetch more users
-  const fetchMoreUsers = () => {
-    // Simulate fetching more users
-    setTimeout(() => {
-      const newUsers = [
-        {
-          name: "David Lee",
-          bio: "This is a short bio for David.",
-          gender: "male",
-          imageUrl: "", // Leave empty for default icon
-        },
-        {
-          name: "Eva Green",
-          bio: "This is a short bio for Eva.",
-          gender: "female",
-          imageUrl: "", // Leave empty for default icon
-        },
-        {
-          name: "Frank White",
-          bio: "Bio for Frank.",
-          gender: "male",
-          imageUrl: "", // Leave empty for default icon
-        },
-        {
-          name: "Grace Black",
-          bio: "Short bio for Grace.",
-          gender: "female",
-          imageUrl: "", // Leave empty for default icon
-        },
-        {
-          name: "Henry Gray",
-          bio: "Bio for Henry.",
-          gender: "male",
-          imageUrl: "", // Leave empty for default icon
-        },
-      ];
+  useEffect(() => {
+    const storedToken = localStorage.getItem("token");
+    if (storedToken) {
+      dispatch(getUser({ offset: 0 }, storedToken)); // Fetch initial users
+    }
+  }, [dispatch]);
+  useEffect(() => {
+    const storedUser = JSON.parse(localStorage.getItem("user")); // Retrieve user data
+    console.log(storedUser, "Stored User"); // Inspect the stored user
+    if (storedUser) {
+      dispatch(getUser({ offset: 0 }, storedUser.token)); // Use the token if needed
+    }
+  }, [dispatch]);
 
-      // Append new users to the existing list
-      setUsers((prevUsers) => [...prevUsers, ...newUsers]);
+  // Function to handle loading more users
+  const fetchMoreUsers = async () => {
+    if (!reduxLoading && hasMore) {
+      // Use redux loading state to check if still fetching
+      setIsLoading(true); // Set loading state to true
 
-      // Stop loading after appending
-      if (newUsers.length === 0) {
-        setHasMore(false);
+      try {
+        const storedToken = localStorage.getItem("token");
+        const response = await dispatch(
+          getUser({ offset: users.length }, storedToken)
+        ); // Fetch more users with offset
+        const newUsers = response.payload.users; // Assuming your action returns the user list in this structure
+
+        // Update hasMore based on the response
+        if (newUsers.length === 0) {
+          setHasMore(false); // No more users to load
+        }
+      } catch (error) {
+        console.error("Error fetching more users:", error);
+        // Optionally handle error state
+      } finally {
+        setIsLoading(false); // Reset loading state
       }
-    }, 1500); // Simulate network delay
+    }
   };
 
   return (
@@ -97,12 +66,13 @@ const MainHome = () => {
         <div>
           {users.length > 0 && (
             <UserTop
-              name={users[0].name}
-              imageUrl={users[0].imageUrl}
-              gender={users[0].gender}
+              name={storedUser.name}
+              imageUrl={storedUser.profilePic}
+              gender={storedUser.gender}
             />
           )}
         </div>
+
         <div className="w-full max-w-sm min-w-[200px] mt-4">
           <div className="relative flex items-center">
             <svg
@@ -142,12 +112,13 @@ const MainHome = () => {
           }}
         >
           {users.map((user, index) => (
-            <div className="w-full sm:w-1/2 p-2" key={index}>
+            <div className="w-full sm:w-1/2 p-2" key={user._id || index}>
               <UserCard
                 name={user.name}
                 bio={user.bio}
                 gender={user.gender}
-                imageUrl={user.imageUrl}
+                imageUrl={user.profilePic}
+                id={user._id}
               />
             </div>
           ))}

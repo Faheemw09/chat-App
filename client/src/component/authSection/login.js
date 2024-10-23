@@ -1,19 +1,68 @@
-import React from "react";
+import React, { useState } from "react";
 import { useNavigate } from "react-router-dom"; // Importing useNavigate for navigation
-import { Button, Checkbox, Form, Input } from "antd"; // Importing Ant Design components
+import { Form, Input } from "antd"; // Importing Ant Design components
 import { MainButton } from "../buttons/mainbutton";
 import "./login.css";
+import { useDispatch } from "react-redux";
+import { message } from "antd";
+import { SignIn } from "../redux/authreducer/action";
+
 const Login = () => {
   const navigate = useNavigate(); // Hook to programmatically navigate
 
-  // Handle form submission
-  const onFinish = (values) => {
-    console.log("Success:", values);
-    // Add your login logic here
-  };
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [emailError, setEmailError] = useState("");
+  const [passwordError, setPasswordError] = useState("");
 
-  const onFinishFailed = (errorInfo) => {
-    console.log("Failed:", errorInfo);
+  const dispatch = useDispatch();
+
+  const handleSignup = async (e) => {
+    e.preventDefault();
+
+    // Clear previous errors
+    setEmailError("");
+    setPasswordError("");
+
+    let isValid = true;
+
+    // Email validation
+    if (!email) {
+      setEmailError("Email is required.");
+      isValid = false;
+    } else if (!/\S+@\S+\.\S+/.test(email)) {
+      setEmailError("Email is invalid.");
+      isValid = false;
+    }
+
+    // Password validation
+    if (!password) {
+      setPasswordError("Password is required.");
+      isValid = false;
+    }
+
+    if (!isValid) return;
+
+    const obj = { email, password };
+
+    try {
+      console.log("api hit");
+      await dispatch(SignIn(obj, navigate));
+
+      // Show success message on login success
+      message.success("Login successful! Redirecting...");
+    } catch (err) {
+      const errorMessage = err.message;
+
+      // Display appropriate error messages based on backend response
+      if (errorMessage === "Email not found") {
+        setEmailError("Email does not exist. Please check and try again.");
+      } else if (errorMessage === "Incorrect password") {
+        setPasswordError("The password you entered is incorrect.");
+      } else {
+        message.error("An unexpected error occurred. Please try again.");
+      }
+    }
   };
 
   return (
@@ -32,7 +81,7 @@ const Login = () => {
           Login
         </h1>
         <h5 className="text-white  text-left">
-          Fill up your details to Login.
+          Fill up your details to login.
         </h5>
       </div>
 
@@ -43,42 +92,42 @@ const Login = () => {
         initialValues={{
           remember: true,
         }}
-        onFinish={onFinish}
-        onFinishFailed={onFinishFailed}
+        onFinish={handleSignup}
         autoComplete="off"
         className="form-item"
       >
         <Form.Item
           label="Email"
           name="email"
-          rules={[
-            {
-              required: true,
-              message: "Please input your Email!",
-            },
-          ]}
+          validateStatus={emailError ? "error" : ""}
+          help={emailError || ""}
         >
-          <Input className="input-field" />
+          <Input
+            className="input-field"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+          />
         </Form.Item>
 
         <Form.Item
           label="Password"
           name="password"
-          rules={[
-            {
-              required: true,
-              message: "Please input your password!",
-            },
-          ]}
+          validateStatus={passwordError ? "error" : ""}
+          help={passwordError || ""}
         >
-          <Input.Password className="input-field" />
+          <Input.Password
+            className="input-field"
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+          />
         </Form.Item>
 
-        <Form.Item className="submit-button ">
+        <Form.Item className="submit-button">
           {/* Submit button using the custom MainButton */}
-          <MainButton text={"Submit"} />
+          <MainButton text={"Submit"} onClick={handleSignup} />
         </Form.Item>
       </Form>
+
       <div>
         <h5 className="text-black text-[12px] leading-none">
           Don't have an account?{" "}

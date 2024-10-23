@@ -7,16 +7,21 @@ export const MainButton = ({
   icon,
   onClick,
   disabled,
+  loading,
   btnSize = "large-btn",
   ...props
-}) => (
-  <Button
-    className={`primary-button ${btnSize}`}
-    icon={icon}
-    disabled={disabled}
-    onClick={onClick}
-    {...props}
-  >
-    {text}
-  </Button>
-);
+}) => {
+  console.log("MainButton rendered", text);
+  return (
+    <Button
+      className={`primary-button ${btnSize}`}
+      icon={icon}
+      disabled={disabled}
+      onClick={onClick}
+      loading={loading}
+      {...props}
+    >
+      {text}
+    </Button>
+  );
+};

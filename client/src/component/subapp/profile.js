@@ -1,42 +1,109 @@
-import React, { useState } from "react";
-import { Avatar, Button, Input, Select } from "antd"; // Import Ant Design components
+import React, { useState, useEffect } from "react";
+import { Avatar, Button, Input, Select, message } from "antd"; // Import Ant Design components
 import { UserOutlined, EditOutlined } from "@ant-design/icons"; // Icons for the avatar and edit action
 import { useNavigate } from "react-router-dom";
+import axios from "axios"; // Axios for API requests
 
 const { Option } = Select;
 
 const Profile = () => {
   const [isEditing, setIsEditing] = useState(false); // State to toggle edit mode
-  const [name, setName] = useState("John Doe"); // Sample name
-  const [bio, setBio] = useState("Software Engineer"); // Sample bio
-  const [gender, setGender] = useState("Male"); // Sample gender
-  const [email] = useState("john.doe@example.com"); // Sample email (read-only)
-  const [image, setImage] = useState(null); // State to hold the profile image
+  const [name, setName] = useState(""); // User's name
+  const [bio, setBio] = useState(""); // User's bio
+  const [gender, setGender] = useState(""); // User's gender
+  const [email, setEmail] = useState(""); // User's email (read-only)
+  const [profilePic, setImage] = useState(null); // State to hold the profile image
+  const [data, setData] = useState({});
+  const [refresh, setRefresh] = useState(false);
+
+  const navigate = useNavigate();
+
+  // Retrieve userId from localStorage
+  const userString = localStorage.getItem("user");
+  const user = userString ? JSON.parse(userString) : null;
+  const userId = user ? user.id : null;
+  // Fetch user data by ID when the component mounts
+  useEffect(() => {
+    const fetchUserData = async () => {
+      try {
+        if (!userId) {
+          message.error("User ID not found in local storage.");
+          return;
+        }
+
+        const response = await axios.get(
+          `http://localhost:8080/api/user/user/${userId}`
+        );
+        const userData = response.data.data;
+        console.log(userData, "ud");
+        setName(userData.name);
+        setBio(userData.bio);
+        setGender(userData.gender);
+        setEmail(userData.email);
+        setImage(userData.profilePic);
+
+        console.log("Data retrieved:", userData);
+      } catch (error) {
+        message.error("Failed to fetch user data.");
+      }
+    };
+
+    fetchUserData();
+  }, [userId]);
 
   // Handler to toggle edit mode
-  const handleEditToggle = () => {
+  const handleEditToggle = async () => {
+    if (isEditing) {
+      try {
+        const formData = new FormData();
+        formData.append("name", name);
+        formData.append("bio", bio);
+        formData.append("gender", gender);
+        formData.append("email", email);
+        if (profilePic) {
+          formData.append("profilePic", profilePic);
+        }
+
+        // Send theconsole.log(f) request to update the profile
+        console.log("User ID:", userId);
+        console.log(
+          "Form Data before sending:",
+          Array.from(formData.entries())
+        );
+        const response = await axios.patch(
+          `http://localhost:8080/api/user/update-profile/${userId}`,
+          formData,
+          {
+            headers: {
+              "Content-Type": "multipart/form-data",
+            },
+          }
+        );
+
+        console.log("Update Response:", response.data);
+        message.success("Profile updated successfully!");
+      } catch (error) {
+        message.error("Failed to update profile.");
+      }
+    }
+
     setIsEditing(!isEditing);
   };
 
-  // Handler for image upload
-  const handleImageChange = (e) => {
-    const file = e.target.files[0];
+  const handleProfilePicChange = (event) => {
+    const file = event.target.files[0];
     if (file) {
-      const reader = new FileReader();
-      reader.onloadend = () => {
-        setImage(reader.result); // Set the image state with the selected file
-      };
-      reader.readAsDataURL(file); // Read the file as a data URL
+      setImage(file);
     }
   };
 
   const renderProfileImage = () => {
-    if (image) {
+    if (profilePic) {
       return (
         <img
-          src={image} // Image URL from props
+          src={profilePic}
           alt="Profile"
-          className="w-24 h-24 rounded-full border-4 border-gray-200" // Width and height set to 100px
+          className="w-24 h-24 rounded-full border-4 border-gray-200" // Styling for image
         />
       );
     } else {
@@ -50,7 +117,6 @@ const Profile = () => {
       );
     }
   };
-  const navigate = useNavigate();
 
   return (
     <div className="flex flex-col h-screen">
@@ -79,7 +145,7 @@ const Profile = () => {
             <input
               type="file"
               accept="image/*"
-              onChange={handleImageChange}
+              onChange={handleProfilePicChange}
               className="absolute inset-0 opacity-0 cursor-pointer"
               onClick={(e) => (e.target.value = null)} // Reset file input
             />
@@ -95,6 +161,7 @@ const Profile = () => {
       </div>
 
       {/* User Info Section */}
+
       <div className="w-full flex flex-col p-4 mt-6">
         {/* Name Section */}
         <div className="mb-4">
@@ -105,7 +172,7 @@ const Profile = () => {
               onChange={(e) => setName(e.target.value)} // Update name on change
             />
           ) : (
-            <p className="text-gray-700">{name}</p>
+            <p className="text-primary">{name}</p>
           )}
         </div>
 
@@ -115,7 +182,7 @@ const Profile = () => {
           <input
             value={email}
             readOnly
-            className="bg-white rounded-xl w-full p-2"
+            className="bg-white text-primary rounded-xl w-full p-2"
           />
         </div>
 
@@ -129,7 +196,7 @@ const Profile = () => {
               onChange={(e) => setBio(e.target.value)} // Update bio on change
             />
           ) : (
-            <p className="text-gray-700">{bio}</p>
+            <p className="text-primary">{bio}</p>
           )}
         </div>
 
@@ -138,11 +205,11 @@ const Profile = () => {
           <h3 className="text-sm font-semibold">Gender:</h3>
           {isEditing ? (
             <Select value={gender} onChange={setGender} className="w-full">
-              <Option value="Male">Male</Option>
-              <Option value="Female">Female</Option>
+              <Option value="male">Male</Option>
+              <Option value="female">Female</Option>
             </Select>
           ) : (
-            <p className="text-gray-700">{gender}</p>
+            <p className="text-primary">{gender}</p>
           )}
         </div>
       </div>
