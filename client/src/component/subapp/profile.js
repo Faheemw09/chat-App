@@ -32,7 +32,7 @@ const Profile = () => {
         }
 
         const response = await axios.get(
-          `http://localhost:8080/api/user/user/${userId}`
+          `https://chatap-iqxt.onrender.com/user/user/${userId}`
         );
         const userData = response.data.data;
         console.log(userData, "ud");
@@ -71,7 +71,7 @@ const Profile = () => {
           Array.from(formData.entries())
         );
         const response = await axios.patch(
-          `http://localhost:8080/api/user/update-profile/${userId}`,
+          `https://chatap-iqxt.onrender.com/api/user/update-profile/${userId}`,
           formData,
           {
             headers: {

@@ -22,7 +22,7 @@ const UsersProfile = () => {
     const fetchUserData = async () => {
       try {
         const response = await axios.get(
-          `http://localhost:8080/api/user/user/${receiverId}`
+          `https://chatap-iqxt.onrender.com/api/user/user/${receiverId}`
         );
         const userData = response.data.data;
         console.log(userData, "ud");
