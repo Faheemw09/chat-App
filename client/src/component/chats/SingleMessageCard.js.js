@@ -1,8 +1,18 @@
 import { Avatar } from "antd";
 import { UserOutlined } from "@ant-design/icons"; // Ant D
 import React from "react";
+import { useNavigate } from "react-router-dom";
 
-const SingleMessageCard = ({ name, imageUrl, lastMessage, time }) => {
+const SingleMessageCard = ({
+  name,
+  imageUrl,
+  lastMessage,
+  lastMessageDate,
+  unread,
+  id,
+  handleMessageClick,
+}) => {
+  console.log(unread, "read");
   const renderProfileImage = () => {
     if (imageUrl) {
       return (
@@ -19,9 +29,18 @@ const SingleMessageCard = ({ name, imageUrl, lastMessage, time }) => {
     }
   };
 
+  const navigate = useNavigate();
+  const handleClick = () => {
+    handleMessageClick(id);
+    navigate(`/chat/${id}`); // Navigate to chat with the provided id
+  };
   return (
-    <div className="w-full p-4 flex flex-row items-center bg-white rounded-lg shadow-lg border border-border">
-      {/* Profile Image */}
+    <div
+      onClick={handleClick}
+      className={`w-full p-4 flex flex-row items-center rounded-lg shadow-lg border ${
+        unread ? "bg-red-200" : "bg-white"
+      }`}
+    >
       <div className="mr-4">{renderProfileImage()}</div>
 
       {/* User Info */}
@@ -35,7 +54,7 @@ const SingleMessageCard = ({ name, imageUrl, lastMessage, time }) => {
       </div>
 
       {/* Last Message Time */}
-      <div className="text-xs text-gray-400">{time || "00:00"}</div>
+      <div className="text-xs text-gray-400">{lastMessageDate || "00:00"}</div>
     </div>
   );
 };

@@ -1,25 +1,83 @@
 import { Avatar } from "antd";
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { UserOutlined, SendOutlined } from "@ant-design/icons"; // Ant Design
-import ChatCard from "./chatcard";
+import { UserOutlined } from "@ant-design/icons";
 import InfiniteScroll from "react-infinite-scroll-component";
 import BottomNav from "../nav/topnav";
-
+import axios from "axios";
+import io from "socket.io-client";
+import SingleMessageCard from "./SingleMessageCard.js";
+const SOCKET_SERVER_URL = "http://localhost:8080";
 const ChatList = () => {
   const navigate = useNavigate();
-  const { imageUrl, gender } = "";
-  const renderProfileImage = () => {
-    if (imageUrl) {
+  const [users, setUsers] = useState([]);
+  const [hasMore, setHasMore] = useState(true);
+  const [currentUser, setCurrentUser] = useState(null);
+  const [socket, setSocket] = useState(null);
+  const user = JSON.parse(localStorage.getItem("user"));
+  const userId = user?.id;
+
+  // Fetch current user info
+  useEffect(() => {
+    const fetchUserData = async () => {
+      try {
+        const response = await axios.get(
+          `http://localhost:8080/api/user/user/${userId}`
+        );
+        setCurrentUser(response.data.data);
+      } catch (error) {
+        console.error("Error fetching user data:", error);
+      }
+    };
+
+    fetchUserData();
+  }, [userId]);
+
+  // Fetch chat list
+  useEffect(() => {
+    const fetchUsers = async () => {
+      try {
+        const response = await axios.get(
+          `http://localhost:8080/api/chat/get-chats/${userId}`
+        );
+
+        setUsers(response.data.data);
+      } catch (error) {
+        console.error("Error fetching chat list:", error);
+      }
+    };
+
+    fetchUsers();
+  }, [userId]);
+
+  // Listen for new messages via Socket.IO
+  // Listen for new messages via Socket.IO
+
+  // Fetch more users when scrolling
+  const fetchMoreUsers = async () => {
+    if (!hasMore) return;
+    try {
+      const response = await axios.get(
+        `http://localhost:8080/api/chat/get-chats/${userId}`
+      );
+      const newUsers = response.data.data;
+      setUsers((prevUsers) => [...prevUsers, ...newUsers]);
+      if (newUsers.length === 0) setHasMore(false);
+    } catch (error) {
+      console.error("Error fetching more users:", error);
+    }
+  };
+
+  const renderProfileImage = (profilePic, gender) => {
+    if (currentUser?.profilePic) {
       return (
         <img
-          src={imageUrl} // Image URL from props
+          src={currentUser.profilePic}
           alt="Profile"
-          className="w-5 h-5 rounded-full border-4 border-gray-200" // Adjusted size
+          className="w-5 h-5 rounded-full border-4 border-gray-200"
         />
       );
     } else {
-      // Return gender-specific icons
       return (
         <Avatar
           size={30}
@@ -29,86 +87,17 @@ const ChatList = () => {
       );
     }
   };
-  const initialUsers = [
-    {
-      name: "John Doe",
-      bio: "This is a short bio for John.",
-      gender: "male",
-      imageUrl: "", // Leave empty for default icon
-    },
-    {
-      name: "Jane Smith",
-      bio: "This is a short bio for Jane.",
-      gender: "female",
-      imageUrl: "", // Leave empty for default icon
-    },
-    {
-      name: "Alice Johnson",
-      bio: "Short bio for Alice.",
-      gender: "female",
-      imageUrl: "", // Leave empty for default icon
-    },
-    {
-      name: "Bob Brown",
-      bio: "This is a bio for Bob.",
-      gender: "male",
-      imageUrl: "", // Leave empty for default icon
-    },
-    {
-      name: "Charlie Davis",
-      bio: "Bio for Charlie.",
-      gender: "male",
-      imageUrl: "", // Leave empty for default icon
-    },
-  ];
 
-  // State for users and loading
-  const [users, setUsers] = useState(initialUsers);
-  const [hasMore, setHasMore] = useState(true);
-  const fetchMoreUsers = () => {
-    // Simulate fetching more users
-    setTimeout(() => {
-      const newUsers = [
-        {
-          name: "David Lee",
-          bio: "This is a short bio for David.",
-          gender: "male",
-          imageUrl: "", // Leave empty for default icon
-        },
-        {
-          name: "Eva Green",
-          bio: "This is a short bio for Eva.",
-          gender: "female",
-          imageUrl: "", // Leave empty for default icon
-        },
-        {
-          name: "Frank White",
-          bio: "Bio for Frank.",
-          gender: "male",
-          imageUrl: "", // Leave empty for default icon
-        },
-        {
-          name: "Grace Black",
-          bio: "Short bio for Grace.",
-          gender: "female",
-          imageUrl: "", // Leave empty for default icon
-        },
-        {
-          name: "Henry Gray",
-          bio: "Bio for Henry.",
-          gender: "male",
-          imageUrl: "", // Leave empty for default icon
-        },
-      ];
+  const handleMessageClick = (messageId) => {
+    // Update the read status locally
+    setUsers((prevUsers) =>
+      prevUsers.map((user) =>
+        user._id === messageId ? { ...user, lastMessageRead: true } : user
+      )
+    );
 
-      // Append new users to the existing list
-      setUsers((prevUsers) => [...prevUsers, ...newUsers]);
-
-      // Stop loading after appending
-      if (newUsers.length === 0) {
-        setHasMore(false);
-      }
-    }, 1500); // Simulate network delay
+    // Navigate to the chat with the specified messageId
+    navigate(`/chat/${messageId}`);
   };
 
   return (
@@ -122,14 +111,18 @@ const ChatList = () => {
             height={20}
             width={20}
             onClick={() => navigate("/home")}
-            className="cursor-pointer mb-2 pt-1"
+            className="cursor-pointer mt-2 mb-2 pt-1"
           />
-          <div className="flex justify-center">{renderProfileImage()}</div>
-          <h2 className="text-xl font-semibold ml-2 text-white">
-            {"Unknown User"}
+          <div className="flex justify-center w-8 h-8 mt-2">
+            {currentUser && renderProfileImage(currentUser.profilePic)}
+          </div>
+          <h2 className="text-xl font-semibold ml-2 mt-1 text-white">
+            {currentUser?.name}
           </h2>
         </div>
       </div>
+
+      {/* Chat List */}
       <div style={{ overflowY: "auto", maxHeight: "calc(100vh - 30px)" }}>
         <InfiniteScroll
           dataLength={users.length}
@@ -138,23 +131,27 @@ const ChatList = () => {
           loader={<h4>Loading...</h4>}
           style={{
             display: "flex",
-            flexDirection: "column", // Change to column layout
+            flexDirection: "column",
             marginTop: "16px",
             width: "100%",
           }}
         >
           {users.map((user, index) => (
             <div className="w-full pl-2 pr-2 pt-1" key={index}>
-              <ChatCard
-                name={user.name}
-                bio={user.bio}
-                gender={user.gender}
-                imageUrl={user.imageUrl}
+              <SingleMessageCard
+                name={user.userName}
+                imageUrl={user.userProfilePic}
+                lastMessage={user.lastMessage}
+                lastMessageDate={user.lastMessageDate}
+                unread={user.lastMessageRead} // Update the unread status
+                id={user._id} // New prop for unread status
+                handleMessageClick={handleMessageClick}
               />
             </div>
           ))}
         </InfiniteScroll>
       </div>
+
       <BottomNav />
     </div>
   );

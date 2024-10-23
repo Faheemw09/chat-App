@@ -14,9 +14,10 @@ const SingleChat = () => {
   const [userdata, setUserData] = useState({});
   const userId = user?.id;
   const navigate = useNavigate();
-  const [messages, setMessages] = useState([]); // Initialize messages as an empty array
+  const [messages, setMessages] = useState([]);
   const [input, setInput] = useState("");
   const [socket, setSocket] = useState(null);
+
   useEffect(() => {
     // Fetch user data for the given receiverId
     const fetchUserData = async () => {
@@ -24,20 +25,15 @@ const SingleChat = () => {
         const response = await axios.get(
           `http://localhost:8080/api/user/user/${receiverId}`
         );
-        // Check if the response is valid and set the user data
-
         setUserData(response.data.data);
-        console.log(response, "y");
       } catch (error) {
         console.error("Error fetching user data:", error);
       }
     };
 
     fetchUserData();
-  }, [receiverId]);
 
-  // Set up Socket.IO connection on component mount
-  useEffect(() => {
+    // Set up Socket.IO connection on component mount
     const newSocket = io(SOCKET_SERVER_URL, {
       transports: ["websocket"],
       reconnectionAttempts: 5,
@@ -46,29 +42,24 @@ const SingleChat = () => {
     setSocket(newSocket);
 
     newSocket.on("connect", () => {
-      console.log("Socket connected:", newSocket.id); // Log successful connection
+      console.log("Socket connected:", newSocket.id);
+      newSocket.emit("join", userId);
+    });
+
+    newSocket.on("receive_message", (data) => {
+      console.log("Message received:", data);
+      const direction = data.receiver === userId ? "received" : "sent";
+      setMessages((prevMessages) => [
+        ...prevMessages,
+        { ...data, direction }, // Add direction based on sender and receiver
+      ]);
     });
 
     newSocket.on("connect_error", (error) => {
       console.error("Connection error:", error);
     });
 
-    // Setting up the message listener after confirming socket creation
-    const receiveMessageHandler = (data) => {
-      console.log("Message received:", data);
-      setMessages((list) => [...list, data]);
-    };
-
-    newSocket.on("receive_message", receiveMessageHandler);
-
-    return () => {
-      newSocket.disconnect();
-      newSocket.off("receive_message", receiveMessageHandler);
-    };
-  }, []); // Only run once on mount
-
-  // Fetch conversation between userId and receiverId only on mount
-  useEffect(() => {
+    // Fetch conversation
     if (userId && receiverId) {
       fetch(
         `http://localhost:8080/api/chat/get-conversation/${userId}/${receiverId}`
@@ -84,43 +75,43 @@ const SingleChat = () => {
         })
         .catch((error) => console.error("Error fetching conversation:", error));
     }
-  }, [userId, receiverId]);
+
+    // Cleanup on unmount
+    return () => {
+      newSocket.disconnect();
+    };
+  }, [receiverId, userId]);
 
   const handleSendMessage = () => {
+    console.log("handleSendMessage called"); // Check if the function is invoked
+    console.log("Socket state:", socket);
     if (input.trim() && socket) {
       const newMessage = {
         sender: userId,
         receiver: receiverId,
         message: input,
-        direction: "sent", // Add the direction
-        timestamp: new Date().toISOString(), // Add a timestamp to the new message
+        direction: "sent",
+        read: false,
+        timestamp: new Date().toISOString(),
       };
 
-      console.log("Sending message:", newMessage); // Debugging line to check the message being sent
-
-      // Send message through API
-      fetch("http://localhost:8080/api/chat/send-message", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(newMessage),
-      })
-        .then((response) => {
-          if (!response.ok) throw new Error("Failed to send message");
-          return response.json();
-        })
-        .then(() => {
-          // Emit the new message through socket to all clients
-          socket.emit("message", newMessage);
-
-          // Update local messages state immediately
+      console.log("Emitting message:", newMessage);
+      socket.emit("send_message", newMessage, (response) => {
+        console.log("Response from server:", response);
+        if (response && response.status === "success") {
+          // Only add the message here to prevent duplication
+          console.log("Clearing input field"); // Add this line
+          setInput("");
           setMessages((prevMessages) => [...prevMessages, newMessage]);
-          console.log("Message sent and state updated:", newMessage); // Debugging line
-
-          setInput(""); // Clear input field
-        })
+        } else {
+          console.error("Message not acknowledged by server");
+        }
+      });
+      setInput(""); // Clear input field
+      // Send the message to the server via API call
+      axios
+        .post("http://localhost:8080/api/chat/send-message", newMessage)
         .catch((error) => console.error("Error sending message:", error));
-    } else {
-      console.warn("Input is empty or socket is not connected."); // Warning if input is empty
     }
   };
 
@@ -133,7 +124,7 @@ const SingleChat = () => {
             alt="Back"
             height={20}
             width={20}
-            onClick={() => navigate("/home")}
+            onClick={() => navigate("/chats")}
             className="cursor-pointer mb-2 mt-2 pt-1"
           />
           <div className="flex justify-center">
@@ -162,25 +153,21 @@ const SingleChat = () => {
       <ScrollToBottom className="scroll-container flex-1 overflow-auto">
         {messages.map((message, index) => (
           <div key={index} className="flex flex-col items-start my-2 w-full">
-            {/* If message direction is 'sent', align to right */}
             {message.direction === "sent" && (
               <div className="flex justify-end w-full">
                 <div className="p-2 ml-2 mr-2 rounded-lg bg-bg text-white">
                   {message.message}
                 </div>
-                {/* Timestamp below the message */}
                 <span className="text-xs text-gray-500 self-end">
                   {new Date(message.timestamp).toLocaleTimeString()}
                 </span>
               </div>
             )}
-            {/* If message direction is 'received', align to left */}
             {message.direction === "received" && (
               <div className="flex justify-start w-full">
                 <div className="p-2 ml-2 mr-2 rounded-lg bg-bgg text-white">
                   {message.message}
                 </div>
-                {/* Timestamp below the message */}
                 <span className="text-xs text-gray-500 self-end">
                   {new Date(message.timestamp).toLocaleTimeString()}
                 </span>
@@ -190,7 +177,6 @@ const SingleChat = () => {
         ))}
       </ScrollToBottom>
 
-      {/* Input Area */}
       <div className="flex p-4 rounded-b-2xl items-center">
         <Input
           type="text"
