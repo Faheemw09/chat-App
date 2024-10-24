@@ -35,7 +35,7 @@ function App() {
                 </h6>
               </div>
 
-              <div className="mt-14 mb-3 flex justify-center">
+              <div className="mt-6 mb-3 flex justify-center">
                 <MainButton text={"Get Started"} onClick={handleClick} />
               </div>
             </>

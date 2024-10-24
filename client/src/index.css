@@ -17,6 +17,7 @@ body,
   width: 100vw; /* Mobile width */
   height: 100vh; /* Full viewport height */
   margin: 0 auto;
+  overflow: hidden;
   border: 1px solid #ddd;
   background-color: #e9fefe;
   border-radius: 25px;
@@ -35,7 +36,7 @@ body {
   body,
   .mobile-view {
     width: 375px; /* Keep the width locked for larger screens */
-    height: 100%; /* Keep the height locked */
+    /* height: 100%;  */
     overflow: hidden; /* Prevent overflow on larger screens */
     margin: 0 auto;
     display: block;
