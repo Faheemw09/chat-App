@@ -6,6 +6,7 @@ import Topnav from "../nav/topnav";
 import BottomNav from "../nav/topnav";
 import { useDispatch, useSelector } from "react-redux"; // Import Redux hooks
 import { getUser } from "../redux/Userreducer/action"; // Adjust the import path
+import SpinnerComponent from "../loading";
 
 const MainHome = () => {
   const dispatch = useDispatch();
@@ -16,6 +17,7 @@ const MainHome = () => {
   } = useSelector((state) => state.user);
   const storedUser = JSON.parse(localStorage.getItem("user")) || {};
   console.log(storedUser.profilePic, "dd");
+  const [searchQuery, setSearchQuey] = useState("");
 
   const [hasMore, setHasMore] = useState(true); // Manage infinite scroll state
   const [isLoading, setIsLoading] = useState(false); // Define local loading state
@@ -59,7 +61,9 @@ const MainHome = () => {
       }
     }
   };
-
+  const filteruser = users.filter((ele) =>
+    ele.name.toLowerCase().includes(searchQuery.toLowerCase())
+  );
   return (
     <div className="flex flex-col items-center justify-center flex-grow">
       <div className="flex flex-col bg-primary border h-[120px] w-full p-4 pt-[20px] rounded-2xl">
@@ -91,6 +95,8 @@ const MainHome = () => {
             <input
               className="w-full h-[40px] bg-white placeholder:text-border text-border text-sm border border-white rounded-2xl pl-10 pr-3 py-2 transition duration-300 ease focus:outline-none focus:bg-secondary focus:border-secondary hover:border-slate-300 shadow-sm focus:shadow"
               placeholder="Search by name"
+              value={searchQuery}
+              onChange={(e) => setSearchQuey(e.target.value)}
             />
           </div>
         </div>
@@ -98,31 +104,45 @@ const MainHome = () => {
 
       {/* User Cards in a Row with Infinite Scrolling */}
       <div style={{ overflowY: "auto", maxHeight: "calc(100vh - 150px)" }}>
-        <InfiniteScroll
-          dataLength={users.length}
-          next={fetchMoreUsers}
-          hasMore={hasMore}
-          loader={<h4>Loading...</h4>}
-          style={{
-            display: "flex",
-            flexWrap: "wrap",
-            justifyContent: "center",
-            marginTop: "16px",
-            width: "100%",
-          }}
-        >
-          {users.map((user, index) => (
-            <div className="w-full sm:w-1/2 p-2" key={user._id || index}>
-              <UserCard
-                name={user.name}
-                bio={user.bio}
-                gender={user.gender}
-                imageUrl={user.profilePic}
-                id={user._id}
-              />
-            </div>
-          ))}
-        </InfiniteScroll>
+        {filteruser.length === 0 && searchQuery ? ( // Check if there are no filtered users and a search query is present
+          <div className="text-center mt-4">No users found.</div> // Display message
+        ) : (
+          <InfiniteScroll
+            dataLength={filteruser.length}
+            next={fetchMoreUsers}
+            hasMore={hasMore}
+            loader={
+              <div
+                style={{
+                  display: "flex",
+                  justifyContent: "center",
+                  marginTop: "16px",
+                }}
+              >
+                <SpinnerComponent />
+              </div>
+            }
+            style={{
+              display: "flex",
+              flexWrap: "wrap",
+              justifyContent: "center",
+              marginTop: "16px",
+              width: "100%",
+            }}
+          >
+            {filteruser.map((user, index) => (
+              <div className="w-full sm:w-1/2 p-2" key={user._id || index}>
+                <UserCard
+                  name={user.name}
+                  bio={user.bio}
+                  gender={user.gender}
+                  imageUrl={user.profilePic}
+                  id={user._id}
+                />
+              </div>
+            ))}
+          </InfiniteScroll>
+        )}
       </div>
       <BottomNav />
     </div>

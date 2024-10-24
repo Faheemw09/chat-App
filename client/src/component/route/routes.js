@@ -6,6 +6,7 @@ import SingleChat from "../chats/SingleChat";
 import ChatList from "../chats/ChatList";
 import Profile from "../subapp/profile";
 import UsersProfile from "../subapp/UsersProfile";
+import Praviteroute from "./praviteroute";
 
 const Allroutes = () => {
   return (
@@ -13,12 +14,47 @@ const Allroutes = () => {
       <Routes>
         <Route path="/login" element={<Login />} />
         <Route path="/signup" element={<Signup />} />
-        <Route path="/home" element={<MainHome />} />
-        <Route path="/chat/:receiverId" element={<SingleChat />} />
+        <Route
+          path="/home"
+          element={
+            <Praviteroute>
+              <MainHome />
+            </Praviteroute>
+          }
+        />
+        <Route
+          path="/chat/:receiverId"
+          element={
+            <Praviteroute>
+              <SingleChat />
+            </Praviteroute>
+          }
+        />
 
-        <Route path="/chats" element={<ChatList />} />
-        <Route path="/profile" element={<Profile />} />
-        <Route path="/userprofile/:receiverId" element={<UsersProfile />} />
+        <Route
+          path="/chats"
+          element={
+            <Praviteroute>
+              <ChatList />
+            </Praviteroute>
+          }
+        />
+        <Route
+          path="/profile"
+          element={
+            <Praviteroute>
+              <Profile />
+            </Praviteroute>
+          }
+        />
+        <Route
+          path="/userprofile/:receiverId"
+          element={
+            <Praviteroute>
+              <UsersProfile />
+            </Praviteroute>
+          }
+        />
       </Routes>
     </div>
   );

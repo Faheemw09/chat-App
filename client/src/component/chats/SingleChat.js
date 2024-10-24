@@ -5,6 +5,8 @@ import { SendOutlined, UserOutlined } from "@ant-design/icons";
 import ScrollToBottom from "react-scroll-to-bottom";
 import io from "socket.io-client";
 import axios from "axios";
+import SpinnerComponent from "../loading";
+// Import the spinner component
 
 const SOCKET_SERVER_URL = "https://chatap-iqxt.onrender.com"; // Replace with your backend URL
 
@@ -17,10 +19,12 @@ const SingleChat = () => {
   const [messages, setMessages] = useState([]);
   const [input, setInput] = useState("");
   const [socket, setSocket] = useState(null);
+  const [loading, setLoading] = useState(true); // Add loading state
 
   useEffect(() => {
     // Fetch user data for the given receiverId
     const fetchUserData = async () => {
+      setLoading(true); // Start loading
       try {
         const response = await axios.get(
           `https://chatap-iqxt.onrender.com/api/user/user/${receiverId}`
@@ -28,6 +32,8 @@ const SingleChat = () => {
         setUserData(response.data.data);
       } catch (error) {
         console.error("Error fetching user data:", error);
+      } finally {
+        setLoading(false); // Stop loading after fetching
       }
     };
 
@@ -99,7 +105,6 @@ const SingleChat = () => {
       socket.emit("send_message", newMessage, (response) => {
         console.log("Response from server:", response);
         if (response && response.status === "success") {
-          // Only add the message here to prevent duplication
           console.log("Clearing input field"); // Add this line
           setInput("");
           setMessages((prevMessages) => [...prevMessages, newMessage]);
@@ -153,32 +158,46 @@ const SingleChat = () => {
         </div>
       </div>
 
-      <ScrollToBottom className="scroll-container flex-1 overflow-auto">
-        {messages.map((message, index) => (
-          <div key={index} className="flex flex-col items-start my-2 w-full">
-            {message.direction === "sent" && (
-              <div className="flex justify-end w-full">
-                <div className="p-2 ml-2 mr-2 rounded-lg bg-bg text-white">
-                  {message.message}
+      {/* Display loading spinner if loading */}
+      {loading ? (
+        <div
+          style={{
+            display: "flex",
+            justifyContent: "center",
+            alignItems: "center",
+            height: "calc(100vh - 140px)", // Adjust height based on your layout
+          }}
+        >
+          <SpinnerComponent />
+        </div>
+      ) : (
+        <ScrollToBottom className="scroll-container flex-1 overflow-auto">
+          {messages.map((message, index) => (
+            <div key={index} className="flex flex-col items-start my-2 w-full">
+              {message.direction === "sent" && (
+                <div className="flex justify-end w-full">
+                  <div className="p-2 ml-2 mr-2 rounded-lg bg-bg text-white">
+                    {message.message}
+                  </div>
+                  <span className="text-xs text-gray-500 self-end">
+                    {new Date(message.timestamp).toLocaleTimeString()}
+                  </span>
                 </div>
-                <span className="text-xs text-gray-500 self-end">
-                  {new Date(message.timestamp).toLocaleTimeString()}
-                </span>
-              </div>
-            )}
-            {message.direction === "received" && (
-              <div className="flex justify-start w-full">
-                <div className="p-2 ml-2 mr-2 rounded-lg bg-bgg text-white">
-                  {message.message}
+              )}
+              {message.direction === "received" && (
+                <div className="flex justify-start w-full">
+                  <div className="p-2 ml-2 mr-2 rounded-lg bg-bgg text-white">
+                    {message.message}
+                  </div>
+                  <span className="text-xs text-gray-500 self-end">
+                    {new Date(message.timestamp).toLocaleTimeString()}
+                  </span>
                 </div>
-                <span className="text-xs text-gray-500 self-end">
-                  {new Date(message.timestamp).toLocaleTimeString()}
-                </span>
-              </div>
-            )}
-          </div>
-        ))}
-      </ScrollToBottom>
+              )}
+            </div>
+          ))}
+        </ScrollToBottom>
+      )}
 
       <div className="flex p-4 rounded-b-2xl items-center">
         <Input

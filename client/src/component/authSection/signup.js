@@ -84,11 +84,19 @@ const Signup = () => {
 
   return (
     <div className="flex flex-col items-center justify-center">
-      <div className="flex flex-col bg-primary h-[190px] w-full p-4 pt-[60px] rounded-2xl">
-        <h1 className="text-white text-left text-[28px] font-semibold leading-none">
+      <div className="flex flex-col bg-primary bor h-[200px] w-full p-4 pt-[60px] rounded-2xl">
+        <img
+          src="/images/arrow.png"
+          alt="Back"
+          height={20}
+          width={20}
+          onClick={() => navigate("/")}
+          className="cursor-pointer mb-2 pt-1"
+        />
+        <h1 className="text-white pt-3 text-left text-[28px] font-semibold leading-none ">
           Register
         </h1>
-        <h5 className="text-white text-left">
+        <h5 className="text-white  text-left">
           Fill up your details to register.
         </h5>
       </div>
@@ -201,8 +209,8 @@ const Signup = () => {
         </div>
       </form>
       <div>
-        <h5 className="text-black text-[12px] leading-none">
-          Already register?{" "}
+        <h5 className="text-black mt-3 text-[12px] leading-none">
+          already have an account ?{" "}
           <span
             onClick={() => navigate("/login")}
             className="text-primary cursor-pointer font-semibold"

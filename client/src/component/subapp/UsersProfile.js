@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { Avatar, message } from "antd"; // Import Ant Design components
+import { Avatar, message, Spin } from "antd"; // Import Ant Design components
 import { UserOutlined } from "@ant-design/icons"; // Icon for the avatar
 import { useNavigate, useParams } from "react-router-dom";
 import axios from "axios"; // Axios for API requests
@@ -7,42 +7,43 @@ import { MainButton } from "../buttons/mainbutton";
 
 const UsersProfile = () => {
   const params = useParams(); // Get all params
-  console.log(params, "All Params");
   const { receiverId } = params;
   const [name, setName] = useState(""); // User's name
   const [bio, setBio] = useState(""); // User's bio
   const [gender, setGender] = useState(""); // User's gender
   const [email, setEmail] = useState(""); // User's email (read-only)
   const [profilePic, setImage] = useState(null); // State to hold the profile image
+  const [loading, setLoading] = useState(true); // Loading state
 
   const navigate = useNavigate();
-  console.log(receiverId, "uiatup");
 
   useEffect(() => {
     const fetchUserData = async () => {
+      setLoading(true); // Start loading
       try {
         const response = await axios.get(
           `https://chatap-iqxt.onrender.com/api/user/user/${receiverId}`
         );
         const userData = response.data.data;
-        console.log(userData, "ud");
         setName(userData.name);
         setBio(userData.bio);
         setGender(userData.gender);
         setEmail(userData.email);
         setImage(userData.profilePic);
-
-        console.log("Data retrieved:at userpo", userData);
       } catch (error) {
         message.error("Failed to fetch user data.");
+      } finally {
+        setLoading(false); // End loading
       }
     };
 
     fetchUserData();
   }, [receiverId]);
+
   const handlemessage = () => {
     navigate(`/chat/${receiverId}`);
   };
+
   const renderProfileImage = () => {
     if (profilePic) {
       return (
@@ -64,6 +65,16 @@ const UsersProfile = () => {
     }
   };
 
+  // Render only spinner while loading
+  if (loading) {
+    return (
+      <div className="flex justify-center items-center h-screen">
+        <Spin size="large" /> {/* Ant Design Spinner */}
+      </div>
+    );
+  }
+
+  // Render user profile after loading
   return (
     <div className="flex flex-col h-screen">
       {/* Top Section: Image and Back Icon */}
@@ -90,16 +101,6 @@ const UsersProfile = () => {
           <h3 className="text-sm font-semibold">Name</h3>
           <p className="text-primary">{name}</p>
         </div>
-
-        {/* Email Section (Read-Only) */}
-        {/* <div className="mb-4">
-          <h3 className="text-sm font-semibold">Email</h3>
-          <input
-            value={email}
-            readOnly
-            className="bg-white text-primary rounded-xl w-full p-2"
-          />
-        </div> */}
 
         {/* Bio Section */}
         <div className="w-full mb-4">

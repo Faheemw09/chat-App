@@ -5,15 +5,17 @@ import { UserOutlined } from "@ant-design/icons";
 import InfiniteScroll from "react-infinite-scroll-component";
 import BottomNav from "../nav/topnav";
 import axios from "axios";
-import io from "socket.io-client";
 import SingleMessageCard from "./SingleMessageCard.js";
+import SpinnerComponent from "../loading.js";
+
 const SOCKET_SERVER_URL = "http://localhost:8080";
+
 const ChatList = () => {
   const navigate = useNavigate();
   const [users, setUsers] = useState([]);
   const [hasMore, setHasMore] = useState(true);
   const [currentUser, setCurrentUser] = useState(null);
-  const [socket, setSocket] = useState(null);
+  const [loading, setLoading] = useState(true); // Loading state
   const user = JSON.parse(localStorage.getItem("user"));
   const userId = user?.id;
 
@@ -36,6 +38,7 @@ const ChatList = () => {
   // Fetch chat list
   useEffect(() => {
     const fetchUsers = async () => {
+      setLoading(true); // Start loading
       try {
         const response = await axios.get(
           `https://chatap-iqxt.onrender.com/api/chat/get-chats/${userId}`
@@ -44,14 +47,13 @@ const ChatList = () => {
         setUsers(response.data.data);
       } catch (error) {
         console.error("Error fetching chat list:", error);
+      } finally {
+        setLoading(false); // Stop loading
       }
     };
 
     fetchUsers();
   }, [userId]);
-
-  // Listen for new messages via Socket.IO
-  // Listen for new messages via Socket.IO
 
   // Fetch more users when scrolling
   const fetchMoreUsers = async () => {
@@ -124,32 +126,62 @@ const ChatList = () => {
 
       {/* Chat List */}
       <div style={{ overflowY: "auto", maxHeight: "calc(100vh - 30px)" }}>
-        <InfiniteScroll
-          dataLength={users.length}
-          next={fetchMoreUsers}
-          hasMore={hasMore}
-          loader={<h4>Loading...</h4>}
-          style={{
-            display: "flex",
-            flexDirection: "column",
-            marginTop: "16px",
-            width: "100%",
-          }}
-        >
-          {users.map((user, index) => (
-            <div className="w-full pl-2 pr-2 pt-1" key={index}>
-              <SingleMessageCard
-                name={user.userName}
-                imageUrl={user.userProfilePic}
-                lastMessage={user.lastMessage}
-                lastMessageDate={user.lastMessageDate}
-                unread={user.lastMessageRead} // Update the unread status
-                id={user._id} // New prop for unread status
-                handleMessageClick={handleMessageClick}
-              />
-            </div>
-          ))}
-        </InfiniteScroll>
+        {loading ? (
+          <div
+            style={{
+              display: "flex",
+              justifyContent: "center", // Center the spinner horizontally
+              alignItems: "center", // Center the spinner vertically
+              height: "100px", // Set a height for the container to help with vertical centering
+            }}
+          >
+            <SpinnerComponent />
+          </div>
+        ) : (
+          <InfiniteScroll
+            dataLength={users.length}
+            next={fetchMoreUsers}
+            hasMore={hasMore}
+            loader={
+              <div
+                style={{
+                  display: "flex",
+                  flexDirection: "column",
+                  marginTop: "16px",
+                  width: "100%",
+                }}
+              >
+                <SpinnerComponent />
+              </div>
+            }
+            style={{
+              display: "flex",
+              flexDirection: "column",
+              marginTop: "16px",
+              width: "100%",
+            }}
+          >
+            {users.length === 0 ? (
+              <div style={{ textAlign: "center", marginTop: "20px" }}>
+                <h3>No chats available</h3>
+              </div>
+            ) : (
+              users.map((user, index) => (
+                <div className="w-full pl-2 pr-2 pt-1" key={index}>
+                  <SingleMessageCard
+                    name={user.userName}
+                    imageUrl={user.userProfilePic}
+                    lastMessage={user.lastMessage}
+                    lastMessageDate={user.lastMessageDate}
+                    unread={user.lastMessageRead} // Update the unread status
+                    id={user._id} // New prop for unread status
+                    handleMessageClick={handleMessageClick}
+                  />
+                </div>
+              ))
+            )}
+          </InfiniteScroll>
+        )}
       </div>
 
       <BottomNav />

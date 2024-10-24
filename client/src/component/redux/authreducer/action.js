@@ -17,11 +17,12 @@ export const SignIn = (obj, navigate) => (dispatch) => {
   return axios
     .post(`https://chatap-iqxt.onrender.com/api/user/user-signin`, obj)
     .then((res) => {
+      console.log(res, "res");
       const { token, user } = res.data;
-      console.log({ token, user });
+      console.log({ token, user }, "login");
       localStorage.setItem("token", token);
       localStorage.setItem("user", JSON.stringify(user));
-      dispatch({ type: LOGIN_SUCCESS, payload: { token, user } });
+      dispatch({ type: LOGIN_SUCCESS, payload: { token, user, auth: true } });
       navigate("/home");
     })
     .catch((err) => {
