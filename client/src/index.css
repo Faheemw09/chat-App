@@ -15,7 +15,7 @@ body,
 /* Main container that mimics mobile device dimensions */
 .mobile-view {
   width: 100vw; /* Mobile width */
-  height: 100vh; /* Full viewport height */
+  height: 100%; /* Full viewport height */
   margin: 0 auto;
   overflow: hidden;
   border: 1px solid #ddd;
