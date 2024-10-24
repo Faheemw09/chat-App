@@ -35,7 +35,7 @@ body {
   body,
   .mobile-view {
     width: 375px; /* Keep the width locked for larger screens */
-    height: 100vh; /* Keep the height locked */
+    height: 90vh; /* Keep the height locked */
     overflow: hidden; /* Prevent overflow on larger screens */
     margin: 0 auto;
     display: block;

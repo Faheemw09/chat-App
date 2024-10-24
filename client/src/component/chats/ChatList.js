@@ -151,7 +151,7 @@ const ChatList = () => {
                   width: "100%",
                 }}
               >
-                <SpinnerComponent />
+                {/* <SpinnerComponent /> */}
               </div>
             }
             style={{
