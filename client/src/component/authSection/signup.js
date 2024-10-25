@@ -209,7 +209,7 @@ const Signup = () => {
         </div>
       </form>
       <div>
-        <h5 className="text-black mt-3 text-[12px] leading-none">
+        <h5 className="text-black mt-4 text-[12px] leading-none">
           already have an account ?{" "}
           <span
             onClick={() => navigate("/login")}

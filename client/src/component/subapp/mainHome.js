@@ -103,7 +103,7 @@ const MainHome = () => {
       </div>
 
       {/* User Cards in a Row with Infinite Scrolling */}
-      <div style={{ overflowY: "auto", maxHeight: "calc(100vh - 150px)" }}>
+      <div style={{ overflowY: "auto", maxHeight: "calc(120vh - 270px)" }}>
         {filteruser.length === 0 && searchQuery ? ( // Check if there are no filtered users and a search query is present
           <div className="text-center mt-4">No users found.</div> // Display message
         ) : (
@@ -144,7 +144,10 @@ const MainHome = () => {
           </InfiniteScroll>
         )}
       </div>
-      <BottomNav />
+      <div className="mb-0">
+        {" "}
+        <BottomNav />
+      </div>
     </div>
   );
 };

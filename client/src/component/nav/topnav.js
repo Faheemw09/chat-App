@@ -7,7 +7,7 @@ const BottomNav = () => {
   const navigate = useNavigate(); // Get the current location
 
   return (
-    <div className="fixed bottom-0 left-0 w-full bg-background p-3 shadow-      lg">
+    <div className="fixed bottom-0 left-0 w-full bg-background p-2 mt shadow-lg">
       <div className="flex justify-around items-center">
         {/* Home Icon */}
         <div className="flex flex-col items-center">

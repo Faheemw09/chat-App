@@ -140,7 +140,10 @@ const SingleChat = () => {
           <SpinnerComponent />
         </div>
       ) : (
-        <ScrollToBottom className="flex-grow overflow-auto p-4">
+        <ScrollToBottom
+          className="flex-grow overflow-auto p-4 pb-16 "
+          style={{ height: "100%" }}
+        >
           {messages.map((message, index) => (
             <div key={index} className="flex flex-col my-2">
               {message.direction === "sent" ? (
@@ -164,18 +167,24 @@ const SingleChat = () => {
       )}
 
       {/* Input Box */}
-      <div className="flex items-center p-4 border-t bg-white">
+
+      <div className="flex items-center fixed bottom-0 left-0 w-full p-4 border-t mb-0 bg-white h-[60px]">
         <Input
           value={input}
           onChange={(e) => setInput(e.target.value)}
           onPressEnter={handleSendMessage}
           placeholder="Type a message..."
-          className="flex-grow mr-4 border rounded-lg p-2"
+          className="flex-grow mr-4 border rounded-lg p-3"
           style={{ height: "40px", borderRadius: "20px" }}
         />
         <SendOutlined
           onClick={handleSendMessage}
-          style={{ fontSize: "24px", color: "#36B8B8", cursor: "pointer" }}
+          style={{
+            fontSize: "24px",
+            color: "#36B8B8",
+            cursor: "pointer",
+            marginLeft: "10px",
+          }}
         />
       </div>
     </div>
