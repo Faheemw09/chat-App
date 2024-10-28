@@ -28,6 +28,8 @@ body,
 /* Content area within mobile container */
 .main-content {
   flex: 1;
+  height: 100%;
+  width: 100%;
   overflow-y: auto; /* Enable scrolling only in the main content */
   padding: 1rem;
 }
