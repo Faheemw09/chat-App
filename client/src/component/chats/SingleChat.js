@@ -103,89 +103,91 @@ const SingleChat = () => {
   };
 
   return (
-    <div className="flex flex-col h-screen">
-      {/* Header */}
-      <div className="flex items-center p-4 bg-primary border h-[70px] w-full">
-        <img
-          src="/images/arrow.png"
-          alt="Back"
-          height={20}
-          width={20}
-          onClick={() => navigate("/chats")}
-          className="cursor-pointer"
-        />
-        <div className="ml-4 flex items-center">
-          {userdata?.profilePic ? (
-            <img
-              src={userdata.profilePic}
-              alt="Profile"
-              className="w-6 h-6 rounded-full border-2 border-gray-200"
-            />
-          ) : (
-            <Avatar
-              size={30}
-              icon={<UserOutlined />}
-              className={`${
-                userdata?.gender === "male" ? "bg-blue-500" : "bg-pink-500"
-              }`}
-            />
-          )}
-          <h2 className="ml-2 text-white font-semibold">{userdata?.name}</h2>
+    <div className="main-content">
+      <div className="flex flex-col h-screen">
+        {/* Header */}
+        <div className="flex items-center p-4 bg-primary border h-[70px] w-full">
+          <img
+            src="/images/arrow.png"
+            alt="Back"
+            height={20}
+            width={20}
+            onClick={() => navigate("/chats")}
+            className="cursor-pointer"
+          />
+          <div className="ml-4 flex items-center">
+            {userdata?.profilePic ? (
+              <img
+                src={userdata.profilePic}
+                alt="Profile"
+                className="w-6 h-6 rounded-full border-2 border-gray-200"
+              />
+            ) : (
+              <Avatar
+                size={30}
+                icon={<UserOutlined />}
+                className={`${
+                  userdata?.gender === "male" ? "bg-blue-500" : "bg-pink-500"
+                }`}
+              />
+            )}
+            <h2 className="ml-2 text-white font-semibold">{userdata?.name}</h2>
+          </div>
         </div>
-      </div>
 
-      {/* Chat Messages */}
-      {loading ? (
-        <div className="flex justify-center items-center flex-grow">
-          <SpinnerComponent />
+        {/* Chat Messages */}
+        {loading ? (
+          <div className="flex justify-center items-center flex-grow">
+            <SpinnerComponent />
+          </div>
+        ) : (
+          <ScrollToBottom
+            className="flex-grow overflow-auto p-4 pb-16 "
+            style={{ height: "100%" }}
+          >
+            {messages.map((message, index) => (
+              <div key={index} className="flex flex-col my-2">
+                {message.direction === "sent" ? (
+                  <div className="self-end bg-bg p-2 rounded-lg text-white">
+                    {message.message}
+                    <span className="text-xs text-gray-500 ml-2">
+                      {new Date(message.timestamp).toLocaleTimeString()}
+                    </span>
+                  </div>
+                ) : (
+                  <div className="self-start bg-bgg p-2 rounded-lg text-white">
+                    {message.message}
+                    <span className="text-xs text-gray-500 ml-2">
+                      {new Date(message.timestamp).toLocaleTimeString()}
+                    </span>
+                  </div>
+                )}
+              </div>
+            ))}
+          </ScrollToBottom>
+        )}
+
+        {/* Input Box */}
+
+        <div className="flex items-center fixed bottom-0 left-0 w-full p-4 border-t mb-0 bg-white h-[60px]">
+          <Input
+            value={input}
+            onChange={(e) => setInput(e.target.value)}
+            onPressEnter={handleSendMessage}
+            placeholder="Type a message..."
+            className="flex-grow mr-4 border rounded-lg p-3"
+            style={{ height: "40px", borderRadius: "20px" }}
+          />
+          <SendOutlined
+            onClick={handleSendMessage}
+            style={{
+              fontSize: "24px",
+              color: "#36B8B8",
+              cursor: "pointer",
+              marginLeft: "10px",
+            }}
+          />
         </div>
-      ) : (
-        <ScrollToBottom
-          className="flex-grow overflow-auto p-4 pb-16 "
-          style={{ height: "100%" }}
-        >
-          {messages.map((message, index) => (
-            <div key={index} className="flex flex-col my-2">
-              {message.direction === "sent" ? (
-                <div className="self-end bg-bg p-2 rounded-lg text-white">
-                  {message.message}
-                  <span className="text-xs text-gray-500 ml-2">
-                    {new Date(message.timestamp).toLocaleTimeString()}
-                  </span>
-                </div>
-              ) : (
-                <div className="self-start bg-bgg p-2 rounded-lg text-white">
-                  {message.message}
-                  <span className="text-xs text-gray-500 ml-2">
-                    {new Date(message.timestamp).toLocaleTimeString()}
-                  </span>
-                </div>
-              )}
-            </div>
-          ))}
-        </ScrollToBottom>
-      )}
-
-      {/* Input Box */}
-
-      <div className="flex items-center fixed bottom-0 left-0 w-full p-4 border-t mb-0 bg-white h-[60px]">
-        <Input
-          value={input}
-          onChange={(e) => setInput(e.target.value)}
-          onPressEnter={handleSendMessage}
-          placeholder="Type a message..."
-          className="flex-grow mr-4 border rounded-lg p-3"
-          style={{ height: "40px", borderRadius: "20px" }}
-        />
-        <SendOutlined
-          onClick={handleSendMessage}
-          style={{
-            fontSize: "24px",
-            color: "#36B8B8",
-            cursor: "pointer",
-            marginLeft: "10px",
-          }}
-        />
       </div>
     </div>
   );

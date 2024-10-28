@@ -35,26 +35,30 @@ const SingleMessageCard = ({
     navigate(`/chat/${id}`); // Navigate to chat with the provided id
   };
   return (
-    <div
-      onClick={handleClick}
-      className={`w-full p-4 flex flex-row items-center rounded-lg shadow-lg border ${
-        unread ? "bg-red-200" : "bg-white"
-      }`}
-    >
-      <div className="mr-4">{renderProfileImage()}</div>
+    <div className="main-content">
+      <div
+        onClick={handleClick}
+        className={`w-full p-4 flex flex-row items-center rounded-lg shadow-lg border ${
+          unread ? "bg-red-200" : "bg-white"
+        }`}
+      >
+        <div className="mr-4">{renderProfileImage()}</div>
 
-      {/* User Info */}
-      <div className="flex-grow">
-        <h2 className="text-lg font-semibold text-black">
-          {name || "Unknown User"}
-        </h2>
-        <p className="text-sm text-gray-500">
-          {lastMessage || "No message available."}
-        </p>
+        {/* User Info */}
+        <div className="flex-grow">
+          <h2 className="text-lg font-semibold text-black">
+            {name || "Unknown User"}
+          </h2>
+          <p className="text-sm text-gray-500">
+            {lastMessage || "No message available."}
+          </p>
+        </div>
+
+        {/* Last Message Time */}
+        <div className="text-xs text-gray-400">
+          {lastMessageDate || "00:00"}
+        </div>
       </div>
-
-      {/* Last Message Time */}
-      <div className="text-xs text-gray-400">{lastMessageDate || "00:00"}</div>
     </div>
   );
 };

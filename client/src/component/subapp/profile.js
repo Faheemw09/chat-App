@@ -140,117 +140,123 @@ const Profile = () => {
   };
 
   return (
-    <div className="flex flex-col h-screen">
-      {/* Loading Spinner */}
-      {isLoading ? (
-        <div className="flex justify-center items-center h-full">
-          <SpinnerComponent />
-        </div>
-      ) : (
-        <>
-          {/* Top Section: Image and Edit Icon */}
-          <div className="relative w-full h-[200px] bg-primary flex flex-col items-center justify-center">
-            <div className="flex flex-row justify-between place-items-center w-full px-2 mt-[70px]">
-              <img
-                src="/images/arrow.png"
-                alt="Back"
-                height={20}
-                width={20}
-                onClick={() => navigate("/home")}
-                className="cursor-pointer mb-2 pt-1"
-              />
-              <button
-                type="button" // Use type="button" for non-submit buttons
-                onClick={handleEditToggle}
-                className="bg-primary text-white"
-              >
-                {isEditing ? "Save" : "Edit"}
-              </button>
-            </div>
-            <div className="flex justify-center mt-[100px]">
-              <div className="relative">
-                {renderProfileImage()}
-                <input
-                  type="file"
-                  accept="image/*"
-                  onChange={handleProfilePicChange}
-                  className="absolute inset-0 opacity-0 cursor-pointer"
-                  onClick={(e) => (e.target.value = null)} // Reset file input
+    <div className="main-content">
+      <div className="flex flex-col h-screen">
+        {/* Loading Spinner */}
+        {isLoading ? (
+          <div className="flex justify-center items-center h-full">
+            <SpinnerComponent />
+          </div>
+        ) : (
+          <>
+            {/* Top Section: Image and Edit Icon */}
+            <div className="relative w-full h-[200px] bg-primary flex flex-col items-center justify-center">
+              <div className="flex flex-row justify-between place-items-center w-full px-2 mt-[70px]">
+                <img
+                  src="/images/arrow.png"
+                  alt="Back"
+                  height={20}
+                  width={20}
+                  onClick={() => navigate("/home")}
+                  className="cursor-pointer mb-2 pt-1"
                 />
-                <EditOutlined
-                  onClick={() =>
-                    document.querySelector('input[type="file"]').click()
-                  }
-                  className="absolute bottom-0 right-0 mb-5 mr-1 text-white cursor-pointer"
-                  style={{ fontSize: "16px", fontStyle: "italic" }}
-                />
+                <button
+                  type="button" // Use type="button" for non-submit buttons
+                  onClick={handleEditToggle}
+                  className="bg-primary text-white"
+                >
+                  {isEditing ? "Save" : "Edit"}
+                </button>
+              </div>
+              <div className="flex justify-center mt-[100px]">
+                <div className="relative">
+                  {renderProfileImage()}
+                  <input
+                    type="file"
+                    accept="image/*"
+                    onChange={handleProfilePicChange}
+                    className="absolute inset-0 opacity-0 cursor-pointer"
+                    onClick={(e) => (e.target.value = null)} // Reset file input
+                  />
+                  <EditOutlined
+                    onClick={() =>
+                      document.querySelector('input[type="file"]').click()
+                    }
+                    className="absolute bottom-0 right-0 mb-5 mr-1 text-white cursor-pointer"
+                    style={{ fontSize: "16px", fontStyle: "italic" }}
+                  />
+                </div>
               </div>
             </div>
-          </div>
 
-          {/* User Info Section */}
-          <div className="w-full flex flex-col p-4 mt-6">
-            {/* Name Section */}
-            <div className="mb-4">
-              <h3 className="text-sm font-semibold">Name:</h3>
-              {isEditing ? (
-                <Input
-                  value={name}
-                  onChange={(e) => setName(e.target.value)} // Update name on change
+            {/* User Info Section */}
+            <div className="w-full flex flex-col p-4 mt-6">
+              {/* Name Section */}
+              <div className="mb-4">
+                <h3 className="text-sm font-semibold">Name:</h3>
+                {isEditing ? (
+                  <Input
+                    value={name}
+                    onChange={(e) => setName(e.target.value)} // Update name on change
+                  />
+                ) : (
+                  <p className="text-primary">{name}</p>
+                )}
+              </div>
+
+              {/* Email Section (Read-Only) */}
+              <div className="mb-4">
+                <h3 className="text-sm font-semibold">Email:</h3>
+                <input
+                  value={email}
+                  readOnly
+                  className="bg-white text-primary rounded-xl w-full p-2"
                 />
-              ) : (
-                <p className="text-primary">{name}</p>
-              )}
-            </div>
+              </div>
 
-            {/* Email Section (Read-Only) */}
-            <div className="mb-4">
-              <h3 className="text-sm font-semibold">Email:</h3>
-              <input
-                value={email}
-                readOnly
-                className="bg-white text-primary rounded-xl w-full p-2"
-              />
-            </div>
+              {/* Bio Section */}
+              <div className="w-full mb-4">
+                <h3 className="text-sm font-semibold">Bio:</h3>
+                {isEditing ? (
+                  <textarea
+                    className="w-full border rounded p-2"
+                    value={bio}
+                    onChange={(e) => setBio(e.target.value)} // Update bio on change
+                  />
+                ) : (
+                  <p className="text-primary">{bio}</p>
+                )}
+              </div>
 
-            {/* Bio Section */}
-            <div className="w-full mb-4">
-              <h3 className="text-sm font-semibold">Bio:</h3>
-              {isEditing ? (
-                <textarea
-                  className="w-full border rounded p-2"
-                  value={bio}
-                  onChange={(e) => setBio(e.target.value)} // Update bio on change
-                />
-              ) : (
-                <p className="text-primary">{bio}</p>
-              )}
+              {/* Gender Selection */}
+              <div className="mb-4">
+                <h3 className="text-sm font-semibold">Gender:</h3>
+                {isEditing ? (
+                  <Select
+                    value={gender}
+                    onChange={setGender}
+                    className="w-full"
+                  >
+                    <Option value="male">Male</Option>
+                    <Option value="female">Female</Option>
+                  </Select>
+                ) : (
+                  <p className="text-primary">{gender}</p>
+                )}
+              </div>
+              <div
+                style={{
+                  display: "flex",
+                  justifyContent: "center",
+                  alignItems: "center",
+                }}
+              >
+                <MainButton text="Signout" onClick={handlesignout} />
+              </div>
             </div>
-
-            {/* Gender Selection */}
-            <div className="mb-4">
-              <h3 className="text-sm font-semibold">Gender:</h3>
-              {isEditing ? (
-                <Select value={gender} onChange={setGender} className="w-full">
-                  <Option value="male">Male</Option>
-                  <Option value="female">Female</Option>
-                </Select>
-              ) : (
-                <p className="text-primary">{gender}</p>
-              )}
-            </div>
-            <div
-              style={{
-                display: "flex",
-                justifyContent: "center",
-                alignItems: "center",
-              }}
-            >
-              <MainButton text="Signout" onClick={handlesignout} />
-            </div>
-          </div>
-        </>
-      )}
+          </>
+        )}
+      </div>
     </div>
   );
 };

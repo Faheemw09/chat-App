@@ -103,88 +103,90 @@ const ChatList = () => {
   };
 
   return (
-    <div className="flex flex-col h-screen">
-      {/* Chat Header */}
-      <div className="flex flex-col bg-primary border h-[70px] w-full p-4 pt-[20px] rounded-2xl">
-        <div className="flex flex-row justify-start items-start space-x-2">
-          <img
-            src="/images/arrow.png"
-            alt="Back"
-            height={20}
-            width={20}
-            onClick={() => navigate("/home")}
-            className="cursor-pointer mt-2 mb-2 pt-1"
-          />
-          <div className="flex justify-center w-8 h-8 mt-2">
-            {currentUser && renderProfileImage(currentUser.profilePic)}
+    <div className="main-content">
+      <div className="flex flex-col h-screen">
+        {/* Chat Header */}
+        <div className="flex flex-col bg-primary border h-[70px] w-full p-4 pt-[20px] rounded-2xl">
+          <div className="flex flex-row justify-start items-start space-x-2">
+            <img
+              src="/images/arrow.png"
+              alt="Back"
+              height={20}
+              width={20}
+              onClick={() => navigate("/home")}
+              className="cursor-pointer mt-2 mb-2 pt-1"
+            />
+            <div className="flex justify-center w-8 h-8 mt-2">
+              {currentUser && renderProfileImage(currentUser.profilePic)}
+            </div>
+            <h2 className="text-xl font-semibold ml-2 mt-1 text-white">
+              {currentUser?.name}
+            </h2>
           </div>
-          <h2 className="text-xl font-semibold ml-2 mt-1 text-white">
-            {currentUser?.name}
-          </h2>
         </div>
-      </div>
 
-      {/* Chat List */}
-      <div style={{ overflowY: "auto", maxHeight: "calc(100vh - 30px)" }}>
-        {loading ? (
-          <div
-            style={{
-              display: "flex",
-              justifyContent: "center", // Center the spinner horizontally
-              alignItems: "center", // Center the spinner vertically
-              height: "100px", // Set a height for the container to help with vertical centering
-            }}
-          >
-            <SpinnerComponent />
-          </div>
-        ) : (
-          <InfiniteScroll
-            dataLength={users.length}
-            next={fetchMoreUsers}
-            hasMore={hasMore}
-            loader={
-              <div
-                style={{
-                  display: "flex",
-                  flexDirection: "column",
-                  marginTop: "16px",
-                  width: "100%",
-                }}
-              >
-                {/* <SpinnerComponent /> */}
-              </div>
-            }
-            style={{
-              display: "flex",
-              flexDirection: "column",
-              marginTop: "16px",
-              width: "100%",
-            }}
-          >
-            {users.length === 0 ? (
-              <div style={{ textAlign: "center", marginTop: "20px" }}>
-                <h3>No chats available</h3>
-              </div>
-            ) : (
-              users.map((user, index) => (
-                <div className="w-full pl-2 pr-2 pt-1" key={index}>
-                  <SingleMessageCard
-                    name={user.userName}
-                    imageUrl={user.userProfilePic}
-                    lastMessage={user.lastMessage}
-                    lastMessageDate={user.lastMessageDate}
-                    unread={user.lastMessageRead} // Update the unread status
-                    id={user._id} // New prop for unread status
-                    handleMessageClick={handleMessageClick}
-                  />
+        {/* Chat List */}
+        <div style={{ overflowY: "auto", maxHeight: "calc(100vh - 30px)" }}>
+          {loading ? (
+            <div
+              style={{
+                display: "flex",
+                justifyContent: "center", // Center the spinner horizontally
+                alignItems: "center", // Center the spinner vertically
+                height: "100px", // Set a height for the container to help with vertical centering
+              }}
+            >
+              <SpinnerComponent />
+            </div>
+          ) : (
+            <InfiniteScroll
+              dataLength={users.length}
+              next={fetchMoreUsers}
+              hasMore={hasMore}
+              loader={
+                <div
+                  style={{
+                    display: "flex",
+                    flexDirection: "column",
+                    marginTop: "16px",
+                    width: "100%",
+                  }}
+                >
+                  {/* <SpinnerComponent /> */}
                 </div>
-              ))
-            )}
-          </InfiniteScroll>
-        )}
-      </div>
+              }
+              style={{
+                display: "flex",
+                flexDirection: "column",
+                marginTop: "16px",
+                width: "100%",
+              }}
+            >
+              {users.length === 0 ? (
+                <div style={{ textAlign: "center", marginTop: "20px" }}>
+                  <h3>No chats available</h3>
+                </div>
+              ) : (
+                users.map((user, index) => (
+                  <div className="w-full pl-2 pr-2 pt-1" key={index}>
+                    <SingleMessageCard
+                      name={user.userName}
+                      imageUrl={user.userProfilePic}
+                      lastMessage={user.lastMessage}
+                      lastMessageDate={user.lastMessageDate}
+                      unread={user.lastMessageRead} // Update the unread status
+                      id={user._id} // New prop for unread status
+                      handleMessageClick={handleMessageClick}
+                    />
+                  </div>
+                ))
+              )}
+            </InfiniteScroll>
+          )}
+        </div>
 
-      <BottomNav />
+        <BottomNav />
+      </div>
     </div>
   );
 };

@@ -76,45 +76,47 @@ const UsersProfile = () => {
 
   // Render user profile after loading
   return (
-    <div className="flex flex-col h-screen">
-      {/* Top Section: Image and Back Icon */}
-      <div className="relative w-full h-[200px] bg-primary flex flex-col items-center justify-center">
-        <div className="flex flex-row justify-between place-items-center w-full px-2 mt-[70px]">
-          <img
-            src="/images/arrow.png"
-            alt="Back"
-            height={20}
-            width={20}
-            onClick={() => navigate("/home")}
-            className="cursor-pointer mb-2 pt-1"
-          />
-        </div>
-        <div className="flex justify-center mt-[100px]">
-          <div className="relative">{renderProfileImage()}</div>
-        </div>
-      </div>
-
-      {/* User Info Section */}
-      <div className="w-full flex flex-col p-4 mt-6">
-        {/* Name Section */}
-        <div className="mb-4">
-          <h3 className="text-sm font-semibold">Name</h3>
-          <p className="text-primary">{name}</p>
+    <div className="main-content">
+      <div className="flex flex-col h-screen">
+        {/* Top Section: Image and Back Icon */}
+        <div className="relative w-full h-[200px] bg-primary flex flex-col items-center justify-center">
+          <div className="flex flex-row justify-between place-items-center w-full px-2 mt-[70px]">
+            <img
+              src="/images/arrow.png"
+              alt="Back"
+              height={20}
+              width={20}
+              onClick={() => navigate("/home")}
+              className="cursor-pointer mb-2 pt-1"
+            />
+          </div>
+          <div className="flex justify-center mt-[100px]">
+            <div className="relative">{renderProfileImage()}</div>
+          </div>
         </div>
 
-        {/* Bio Section */}
-        <div className="w-full mb-4">
-          <h3 className="text-sm font-semibold">Bio</h3>
-          <p className="text-primary">{bio}</p>
-        </div>
+        {/* User Info Section */}
+        <div className="w-full flex flex-col p-4 mt-6">
+          {/* Name Section */}
+          <div className="mb-4">
+            <h3 className="text-sm font-semibold">Name</h3>
+            <p className="text-primary">{name}</p>
+          </div>
 
-        {/* Gender Section */}
-        <div className="mb-4">
-          <h3 className="text-sm font-semibold">Gender</h3>
-          <p className="text-primary">{gender}</p>
-        </div>
-        <div className="mb-4 ml-4">
-          <MainButton text={"Message"} onClick={handlemessage} />
+          {/* Bio Section */}
+          <div className="w-full mb-4">
+            <h3 className="text-sm font-semibold">Bio</h3>
+            <p className="text-primary">{bio}</p>
+          </div>
+
+          {/* Gender Section */}
+          <div className="mb-4">
+            <h3 className="text-sm font-semibold">Gender</h3>
+            <p className="text-primary">{gender}</p>
+          </div>
+          <div className="mb-4 ml-4">
+            <MainButton text={"Message"} onClick={handlemessage} />
+          </div>
         </div>
       </div>
     </div>
