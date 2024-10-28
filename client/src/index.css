@@ -2,7 +2,7 @@
 @tailwind components;
 @tailwind utilities;
 
-/* Apply mobile layout to the entire app */
+/* Basic setup to restrict full height */
 html,
 body,
 #root {
@@ -12,54 +12,33 @@ body,
   overflow: hidden; /* Prevent overflow on the body */
 }
 
-/* Main container that mimics mobile device dimensions */
+/* Main mobile container */
 .mobile-view {
-  width: 100vw; /* Mobile width */
-  height: 100vh; /* Full viewport height */
+  width: 100vw;
+  height: 100vh;
   margin: 0 auto;
   border: 1px solid #ddd;
   background-color: #e9fefe;
   border-radius: 25px;
-  overflow-y: auto; /* Enable vertical scrolling */
   display: flex;
-  flex-direction: column;
+  flex-direction: column; /* Column layout to stack header/content/footer */
+  overflow: hidden; /* Prevent unnecessary scroll on container */
 }
 
-/* Custom scrollbar styles for better visual control */
-.mobile-view::-webkit-scrollbar {
-  width: 8px;
-}
-
-.mobile-view::-webkit-scrollbar-thumb {
-  background-color: #bbb;
-  border-radius: 10px;
-}
-
-.mobile-view::-webkit-scrollbar-track {
-  background-color: #f1f1f1;
-}
-
-/* Ensure components respect the mobile container height */
+/* Content area within mobile container */
 .main-content {
-  flex: 1; /* Takes up remaining space in mobile view */
-  overflow-y: auto; /* Scroll only the content if it exceeds */
+  flex: 1;
+  overflow-y: auto; /* Enable scrolling only in the main content */
+  padding: 1rem;
 }
 
-/* Prevent scaling of content */
-body {
-  -webkit-transform: scale(1);
-  transform: scale(1);
-}
-
-/* Force mobile size on larger screens */
+/* Ensure consistent viewport sizing on larger screens */
 @media (min-width: 768px) {
   html,
   body,
   .mobile-view {
-    width: 375px; /* Lock width for larger screens */
+    width: 375px;
     height: 100vh;
-    overflow: hidden; /* Prevent overflow on larger screens */
     margin: 0 auto;
-    display: block;
   }
 }
