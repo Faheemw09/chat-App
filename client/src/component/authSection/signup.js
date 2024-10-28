@@ -5,6 +5,7 @@ import { EyeInvisibleOutlined, EyeOutlined } from "@ant-design/icons";
 import { useNavigate } from "react-router-dom";
 import { SignUp } from "../redux/authreducer/action";
 import { MainButton } from "../buttons/mainbutton";
+import SpinnerComponent from "../loading";
 
 const Signup = () => {
   const [email, setEmail] = useState("");
@@ -20,7 +21,9 @@ const Signup = () => {
   const navigate = useNavigate();
   const loading = useSelector((state) => state.auth.isLoading);
   const [genderError, setGenderError] = useState("");
-  console.log(loading, "loaf");
+  // console.log(loading, "loaf");
+  const [isloading, setIsloading] = useState(false);
+
   const togglePasswordVisibility = () => setShowPassword(!showPassword);
 
   const handleSignup = async (e) => {
@@ -61,7 +64,7 @@ const Signup = () => {
     if (!isValid) return;
 
     const obj = { email, password, name, gender };
-
+    setIsloading(true);
     try {
       console.log("api hit");
       await dispatch(SignUp(obj, navigate));
@@ -79,12 +82,15 @@ const Signup = () => {
       } else {
         message.error("An unexpected error occurred. Please try again.");
       }
+    } finally {
+      setIsloading(false);
     }
   };
 
   return (
     <div className="flex flex-col items-center justify-center">
-      <div className="flex flex-col bg-primary bor h-[200px] w-full p-4 pt-[60px] rounded-2xl">
+      {/* {isloading && <SpinnerComponent />} */}
+      <div className="flex flex-col bg-primary bor h-[150px] w-full p-4 pt-[30px] rounded-2xl">
         <img
           src="/images/arrow.png"
           alt="Back"

@@ -26,7 +26,7 @@ function App() {
                   />
                 </div>
               </div>
-              <div className="flex flex-col items-center justify-center flex-grow mt-20">
+              <div className="flex flex-col items-center justify-center flex-grow mt-10">
                 <h4 className="text-black font-bold text-[20px] leading-none">
                   Goftego
                 </h4>

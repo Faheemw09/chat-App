@@ -6,6 +6,7 @@ import "./login.css";
 import { useDispatch } from "react-redux";
 import { message } from "antd";
 import { SignIn } from "../redux/authreducer/action";
+import SpinnerComponent from "../loading";
 
 const Login = () => {
   const navigate = useNavigate(); // Hook to programmatically navigate
@@ -14,6 +15,7 @@ const Login = () => {
   const [password, setPassword] = useState("");
   const [emailError, setEmailError] = useState("");
   const [passwordError, setPasswordError] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
 
   const dispatch = useDispatch();
 
@@ -44,6 +46,7 @@ const Login = () => {
     if (!isValid) return;
 
     const obj = { email, password };
+    setIsLoading(true);
 
     try {
       console.log("api hit");
@@ -62,13 +65,16 @@ const Login = () => {
       } else {
         message.error("An unexpected error occurred. Please try again.");
       }
+    } finally {
+      setIsLoading(false); // Stop loading after request completes
     }
   };
 
   return (
     <div className="flex flex-col items-center justify-center flex-grow">
       {/* Header Section */}
-      <div className="flex flex-col bg-primary bor h-[200px] w-full p-4 pt-[60px] rounded-2xl">
+      {/* {isLoading && <SpinnerComponent />} */}
+      <div className="flex flex-col bg-primary bor h-[150px] w-full p-4 pt-[20px] rounded-2xl">
         <img
           src="/images/arrow.png"
           alt="Back"
@@ -124,7 +130,15 @@ const Login = () => {
 
         <Form.Item className="submit-button">
           {/* Submit button using the custom MainButton */}
-          <MainButton text={"Submit"} onClick={handleSignup} />
+          <MainButton
+            type="submit"
+            disabled={isLoading}
+            loading={isLoading}
+            text={"Signin"}
+            onClick={handleSignup}
+          >
+            {isLoading ? "Signining..." : "Submit"}
+          </MainButton>
         </Form.Item>
       </Form>
 
