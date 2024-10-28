@@ -10,24 +10,18 @@ body,
   margin: 0;
   padding: 0;
   overflow: hidden; /* Prevent overflow on the body */
-  display: flex;
-  justify-content: center;
-  align-items: center;
 }
 
 /* Main container that mimics mobile device dimensions */
 .mobile-view {
-  width: 100vw; /* Full viewport width for mobile */
+  width: 100vw; /* Mobile width */
   height: 100vh; /* Full viewport height */
-  max-width: 375px; /* Lock width on larger screens */
-  max-height: 667px; /* Fixed height for larger screens */
   margin: 0 auto;
+
   border: 1px solid #ddd;
   background-color: #e9fefe;
   border-radius: 25px;
-  overflow-y: auto; /* Enable vertical scrolling within mobile view */
-  display: flex;
-  flex-direction: column;
+  overflow-y: auto; /* Enable vertical scrolling */
 }
 
 /* Prevent scaling of content */
@@ -38,22 +32,15 @@ body {
 
 /* Force mobile size on larger screens */
 @media (min-width: 768px) {
+  html,
+  body,
   .mobile-view {
-    width: 375px; /* Lock mobile width */
-    height: 667px; /* Lock mobile height */
-    overflow: hidden; /* Prevent additional scrolling */
+    width: 375px; /* Keep the width locked for larger screens */
+    height: 100vh;
+    overflow: hidden; /* Prevent overflow on larger screens */
+    margin: 0 auto;
+    display: block;
   }
 }
-
 /* Custom Scrollbar Styles */
-.mobile-view::-webkit-scrollbar {
-  width: 8px;
-}
-.mobile-view::-webkit-scrollbar-track {
-  background: #e9fefe;
-}
-.mobile-view::-webkit-scrollbar-thumb {
-  background-color: #36b8b8;
-  border-radius: 4px;
-  border: 2px solid #e9fefe;
-}
+/* Custom Scrollbar Styles */
