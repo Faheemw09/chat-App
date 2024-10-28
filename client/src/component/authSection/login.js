@@ -71,87 +71,89 @@ const Login = () => {
   };
 
   return (
-    <div className="flex flex-col items-center justify-center flex-grow">
-      {/* Header Section */}
-      {/* {isLoading && <SpinnerComponent />} */}
-      <div className="flex flex-col bg-primary bor h-[150px] w-full p-4 pt-[20px] rounded-2xl">
-        <img
-          src="/images/arrow.png"
-          alt="Back"
-          height={20}
-          width={20}
-          onClick={() => navigate("/")}
-          className="cursor-pointer mb-2 pt-1"
-        />
-        <h1 className="text-white pt-3 text-left text-[28px] font-semibold leading-none ">
-          Login
-        </h1>
-        <h5 className="text-white  text-left">
-          Fill up your details to login.
-        </h5>
-      </div>
-
-      {/* Login Form */}
-      <Form
-        name="basic"
-        layout="vertical"
-        initialValues={{
-          remember: true,
-        }}
-        onFinish={handleSignup}
-        autoComplete="off"
-        className="form-item"
-      >
-        <Form.Item
-          label="Email"
-          name="email"
-          validateStatus={emailError ? "error" : ""}
-          help={emailError || ""}
-        >
-          <Input
-            className="input-field"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
+    <div className="main-content">
+      <div className="flex flex-col items-center justify-center flex-grow">
+        {/* Header Section */}
+        {/* {isLoading && <SpinnerComponent />} */}
+        <div className="flex flex-col bg-primary bor h-[150px] w-full p-4 pt-[20px] rounded-2xl">
+          <img
+            src="/images/arrow.png"
+            alt="Back"
+            height={20}
+            width={20}
+            onClick={() => navigate("/")}
+            className="cursor-pointer mb-2 pt-1"
           />
-        </Form.Item>
+          <h1 className="text-white pt-3 text-left text-[28px] font-semibold leading-none ">
+            Login
+          </h1>
+          <h5 className="text-white  text-left">
+            Fill up your details to login.
+          </h5>
+        </div>
 
-        <Form.Item
-          label="Password"
-          name="password"
-          validateStatus={passwordError ? "error" : ""}
-          help={passwordError || ""}
+        {/* Login Form */}
+        <Form
+          name="basic"
+          layout="vertical"
+          initialValues={{
+            remember: true,
+          }}
+          onFinish={handleSignup}
+          autoComplete="off"
+          className="form-item"
         >
-          <Input.Password
-            className="input-field"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-          />
-        </Form.Item>
-
-        <Form.Item className="submit-button">
-          {/* Submit button using the custom MainButton */}
-          <MainButton
-            type="submit"
-            disabled={isLoading}
-            loading={isLoading}
-            text={"Signin"}
-            onClick={handleSignup}
+          <Form.Item
+            label="Email"
+            name="email"
+            validateStatus={emailError ? "error" : ""}
+            help={emailError || ""}
           >
-            {isLoading ? "Signining..." : "Submit"}
-          </MainButton>
-        </Form.Item>
-      </Form>
+            <Input
+              className="input-field"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+            />
+          </Form.Item>
 
-      <div>
-        <h5 className="text-black text-[12px] leading-none">
-          Don't have an account?{" "}
-          <span
-            onClick={() => navigate("/signup")}
-            className="text-primary cursor-pointer font-semibold"
+          <Form.Item
+            label="Password"
+            name="password"
+            validateStatus={passwordError ? "error" : ""}
+            help={passwordError || ""}
           >
-            Register
-          </span>
-        </h5>
+            <Input.Password
+              className="input-field"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+            />
+          </Form.Item>
+
+          <Form.Item className="submit-button">
+            {/* Submit button using the custom MainButton */}
+            <MainButton
+              type="submit"
+              disabled={isLoading}
+              loading={isLoading}
+              text={"Signin"}
+              onClick={handleSignup}
+            >
+              {isLoading ? "Signining..." : "Submit"}
+            </MainButton>
+          </Form.Item>
+        </Form>
+
+        <div>
+          <h5 className="text-black text-[12px] leading-none">
+            Don't have an account?{" "}
+            <span
+              onClick={() => navigate("/signup")}
+              className="text-primary cursor-pointer font-semibold"
+            >
+              Register
+            </span>
+          </h5>
+        </div>
       </div>
     </div>
   );
